@@ -29,7 +29,7 @@ defmodule Day06 do
     new_character = chars
     |> Enum.group_by(&(&1))
     |> Enum.map(fn {a, b} -> {a, String.length(to_string(b))} end)
-    |> Enum.sort(&Day06.letter_sorter/2)
+    |> Enum.sort_by(fn {_char, count} -> -count end)
     |> hd
     |> elem(0)
 
@@ -37,7 +37,4 @@ defmodule Day06 do
   end
 
   def generate_message([], message), do: message
-
-  def letter_sorter({a_char, a_count}, {b_char, b_count}) when a_count == b_count, do: a_char <= b_char
-  def letter_sorter({_, a_count}, {_, b_count}), do: b_count <= a_count
 end
