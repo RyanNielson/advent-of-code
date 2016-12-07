@@ -1,9 +1,9 @@
 defmodule Day06 do
-  def run(input) do
+  def run(input, most_common? \\ true) do
     input
     |> parse
     |> index_characters(%{})
-    |> generate_message("")
+    |> generate_message("", most_common?)
   end
 
   def parse(input) do
@@ -25,16 +25,19 @@ defmodule Day06 do
 
   def index_characters([], counts), do: counts |> Map.to_list
 
-  def generate_message([{_index, chars} | rest], message) do
+  def generate_message([{_index, chars} | rest], message, most_common?) do
     new_character = chars
     |> Enum.group_by(&(&1))
     |> Enum.map(fn {a, b} -> {a, String.length(to_string(b))} end)
-    |> Enum.sort_by(fn {_char, count} -> -count end)
+    |> sort_characters(most_common?)
     |> hd
     |> elem(0)
 
-    generate_message(rest, message <> new_character)
+    generate_message(rest, message <> new_character, most_common?)
   end
 
-  def generate_message([], message), do: message
+  def generate_message([], message, _), do: message
+
+  def sort_characters(chars, most_common?) when most_common?, do: chars |> Enum.sort_by(fn {_char, count} -> -count end)
+  def sort_characters(chars, _), do: chars |> Enum.sort_by(fn {_char, count} -> count end)
 end

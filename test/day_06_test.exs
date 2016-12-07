@@ -6,9 +6,14 @@ defmodule Day06Test do
     assert Day06.parse(input_simple) == ["eedadn", "drvtee", "eandsr", "raavrd", "atevrs", "tsrnev", "sdttsa", "rasrtv", "nssdts", "ntnada", "svetve", "tesnvt", "vntsnd", "vrdear", "dvrsen", "enarar"]
   end
 
-  test "run" do
+  test "run for part 1" do
     assert Day06.run(input_simple) == "easter"
     assert Day06.run(input) == "mlncjgdg"
+  end
+
+  test "run least common for part 2" do
+    assert Day06.run(input_simple, false) == "advent"
+    assert Day06.run(input, false) == "bipjaytb"
   end
 
   defp input_simple do
