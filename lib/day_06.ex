@@ -17,7 +17,7 @@ defmodule Day06 do
     |> String.graphemes
     |> Enum.with_index
     |> Enum.reduce(grouped, fn {char, pos}, updated_grouped ->
-      Map.update(updated_grouped, pos, char, &(&1 <> char))
+      Map.update(updated_grouped, pos, [char], &([char | &1]))
     end)
 
     index_characters(lines, new_grouped)
@@ -25,13 +25,12 @@ defmodule Day06 do
 
   def index_characters([], counts), do: counts |> Map.to_list
 
-  def generate_message([{index, chars} | rest], message) do
+  def generate_message([{_index, chars} | rest], message) do
     new_character = chars
-    |> String.graphemes
     |> Enum.group_by(&(&1))
     |> Enum.map(fn {a, b} -> {a, String.length(to_string(b))} end)
     |> Enum.sort(&Day06.letter_sorter/2)
-    |> List.first
+    |> hd
     |> elem(0)
 
     generate_message(rest, message <> new_character)
