@@ -27,7 +27,7 @@ defmodule Day04.Room do
       end
   end
 
-  defp build_room([checksum | [id | name_parts]] = parts) do
+  defp build_room([checksum | [id | name_parts]] = _parts) do
     %Day04.Room{name: name_parts |> Enum.reverse |> Enum.join("-"), id: String.to_integer(id), checksum: checksum}
   end
 end

@@ -20,7 +20,7 @@ defmodule Day07 do
   def tls?({seqs, hypernet_seqs}), do: Enum.any?(seqs, &abba?/1) and not Enum.any?(hypernet_seqs, &abba?/1)
 
   def abba?(piece) when byte_size(piece) < 4, do: false
-  def abba?(<<a::utf8, b::utf8, b::utf8, a::utf8, rest::binary>>) when a != b, do: true
+  def abba?(<<a::utf8, b::utf8, b::utf8, a::utf8, _rest::binary>>) when a != b, do: true
   def abba?(<<_char::utf8, rest::binary>>), do: abba?(rest)
 
   def count(ips) do

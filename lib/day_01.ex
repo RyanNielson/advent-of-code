@@ -24,7 +24,7 @@ defmodule Day01 do
     move(directions, new_location, new_heading)
   end
 
-  def move([], location, heading), do: location
+  def move([], location, _heading), do: location
 
   def turn(:N, :L), do: :W
   def turn(:N, :R), do: :E
