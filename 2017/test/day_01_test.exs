@@ -30,7 +30,6 @@ defmodule AdventOfCode2017.Day01Test do
   defp input_sample_2, do: "1111"
   defp input_sample_3, do: "1234"
   defp input_sample_4, do: "91212129"
-
   defp input_sample_1_circular_list, do: [1, 1, 2, 2, 1]
   defp input_sample_2_circular_list, do: [1, 1, 1, 1, 1]
   defp input_sample_3_circular_list, do: [1, 2, 3, 4, 1]
