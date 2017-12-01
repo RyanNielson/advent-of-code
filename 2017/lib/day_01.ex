@@ -1,17 +1,7 @@
 defmodule AdventOfCode2017.Day01 do
-  def part1(input) do
-    input 
-    |> parse_to_list
-    |> summable_list(1)
-    |> Enum.sum
-  end
+  def part1(input), do: input |> parse_to_list |> summable_list(1) |> Enum.sum
 
-  def part2(input) do
-    input 
-    |> parse_to_list
-    |> summable_list
-    |> Enum.sum
-  end
+  def part2(input), do: input |> parse_to_list |> summable_list |> Enum.sum
 
   defp parse_to_list(input) do
     input 
@@ -28,11 +18,8 @@ defmodule AdventOfCode2017.Day01 do
 
   defp summable_list(list) do
     offset = list |> length |> div(2)
-    list 
-    |> summable_list(offset)
+    summable_list(list, offset)
   end
 
-  defp wrapped_index(length, index) do
-    Kernel.rem(index, length)
-  end
+  defp wrapped_index(length, index), do: Kernel.rem(index, length)
 end
