@@ -1,6 +1,6 @@
 defmodule AdventOfCode2017.Day07 do
-  @name_pattern ~r/(\w+) \((\d+)\)/
-  @name_holding_pattern ~r/(\w+) \((\d+)\) \-\> (.+)/
+  # @name_pattern ~r/(\w+) \((\d+)\)/
+  # @name_holding_pattern ~r/(\w+) \((\d+)\) \-\> (.+)/
 
   def part1(input) do
     input
@@ -11,17 +11,14 @@ defmodule AdventOfCode2017.Day07 do
   def parse(input) do
     input
     |> String.split((~r/\r\n|\r|\n/), trim: true)
-    |> Enum.map(fn (line) ->
-      if (String.match?(line, ~r/\-\>/)) do
-        [_, name, weight, above] = Regex.run(@name_holding_pattern, line)
-        [name, String.to_integer(weight), String.split(above, ~r/(\W+)/)]
-      else
-        [_, name, weight] = Regex.run(@name_pattern, line)
-        [name, String.to_integer(weight), []]
-      end
-    end)
+    |> Enum.map(&build_program(Regex.scan(~r/\w+/, &1)))
   end
 
+  def build_program([[name], [weight] | above]) do
+    [name, String.to_integer(weight), List.flatten(above)]
+  end
+
+  # TODO: Might be able to just use MapSet
   def find_bottom(tower) do
     names = Enum.map(tower, &List.first/1)
     names_above = tower
