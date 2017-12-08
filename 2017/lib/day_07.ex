@@ -18,7 +18,6 @@ defmodule AdventOfCode2017.Day07 do
     [name, String.to_integer(weight), List.flatten(above)]
   end
 
-  # TODO: Might be able to just use MapSet
   def find_bottom(tower) do
     names = Enum.map(tower, &List.first/1)
     names_above = tower
