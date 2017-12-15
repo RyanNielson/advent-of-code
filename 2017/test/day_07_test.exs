@@ -9,6 +9,11 @@ defmodule AdventOfCode2017.Day07Test do
       assert part1(input("test/input/day_07.txt")) == "dgoocsw"
     end
 
+    test "part2" do
+      assert part2(sample_input_1()) == "tknk"
+      # assert part1(input("test/input/day_07.txt")) == "dgoocsw"
+    end
+
     defp sample_input_1 do
       "pbga (66)
       xhth (57)
