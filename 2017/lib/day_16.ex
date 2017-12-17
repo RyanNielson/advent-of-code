@@ -2,15 +2,20 @@ defmodule AdventOfCode2017.Day16 do
   @initial_programs "abcdefghijklmnop"
 
   def part1(input, programs \\ @initial_programs) do
-    program_list = String.graphemes(programs)
-    
     input
     |> parse()
-    |> move(program_list)
+    |> move(String.graphemes(programs))
     |> List.to_string()
   end
 
-  def move(moves, programs) do
+  def part2(input, programs \\ @initial_programs) do
+    input
+    |> parse()
+    |> move_times(String.graphemes(programs), 1_000_000_000) 
+    |> List.to_string()
+  end
+
+  defp move(moves, programs) do
     Enum.reduce(moves, programs, fn (move, progs) ->
       case move do
         {"s", amount} -> spin(progs, amount)
@@ -20,9 +25,18 @@ defmodule AdventOfCode2017.Day16 do
     end)
   end
 
+  defp move_times(moves, programs, times) do
+    Enum.reduce_while(0..times, {programs, []}, fn (rep, {progs, seen}) ->
+      if Enum.find(seen, fn x -> x == progs end) do
+        {:halt, Enum.at(seen, rem(times, rep))}
+      else
+        {:cont, {move(moves, progs), seen ++ [progs]}}
+      end
+    end)
+  end
+
   def spin(programs, amount) do
-    {head, tail} = programs
-    |> Enum.split(-amount)
+    {head, tail} = Enum.split(programs, -amount)
 
     tail ++ head
   end

@@ -22,10 +22,9 @@ defmodule AdventOfCode2017.Day16Test do
     assert partner(["e", "a", "b", "d", "c"], "e", "b") == ["b", "a", "e", "d", "c"] 
   end
 
-  # test "part2" do
-  #   assert part2(sample_input_1()) == 309
-  #   assert part2(input("test/input/day_15.txt")) == 343
-  # end
+  test "part2" do
+    assert part2(input("test/input/day_16.txt")) == "pogbjfihclkemadn"
+  end
 
   test "parse" do
     assert parse(sample_input_1()) == [{"s", 1}, {"x", 3, 4}, {"p", "e", "b"}]
