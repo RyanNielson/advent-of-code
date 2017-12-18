@@ -9,6 +9,10 @@ defmodule AdventOfCode2017.Day17Test do
     assert part1(input("test/input/day_17.txt")) == 1173
   end
 
+  test "part2" do
+    assert part2(input("test/input/day_17.txt")) == 1930815
+  end
+
   test "parse" do
     assert parse(input("test/input/day_17.txt")) == 304
   end
