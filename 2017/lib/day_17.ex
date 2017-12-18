@@ -21,11 +21,8 @@ defmodule AdventOfCode2017.Day17 do
     |> spinlock(steps, current + 1, new_position)
   end
 
-
-
   def short_circuit(value, steps, current \\ 1, pos \\ 0)
   def short_circuit(value, _, current, _) when current > @total_steps_2, do: value
-
   def short_circuit(value, steps, current, position) do
     new_position = rem(position + steps, current) + 1
     new_value = if new_position == 1, do: current, else: value
