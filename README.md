@@ -1,3 +1,3 @@
-# Advent Of Code 2016
+# Advent Of Code Solutions
 
-**TODO: Add description**
+My solutions over the years for the [Advent of Code](https://adventofcode.com) programming puzzles.
