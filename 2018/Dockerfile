@@ -1,7 +1,6 @@
 FROM ruby:2.5
-RUN mkdir /myapp
-WORKDIR /myapp
-COPY Gemfile /myapp/Gemfile
-COPY Gemfile.lock /myapp/Gemfile.lock
+RUN mkdir /aoc
+WORKDIR /aoc
+COPY Gemfile Gemfile.lock /aoc/
 RUN bundle install
-COPY . /myapp
+COPY . /aoc
