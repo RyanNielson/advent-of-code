@@ -37,8 +37,20 @@ class Day02Test < Minitest::Test
     assert_equal 6370, @day_02.part1(input("day_02.txt"))
   end
 
-  # def test_part2
-  # end
+  def test_difference_count
+    assert_equal 2, @day_02.difference_count("abcde", "axcye")
+    assert_equal 1, @day_02.difference_count("fghij", "fguij")
+  end
+
+  def test_remove_differing_characters
+    assert_equal "ace", @day_02.remove_differing_characters("abcde", "axcye")
+    assert_equal "fgij", @day_02.remove_differing_characters("fghij", "fguij")
+  end
+
+  def test_part2
+    assert_equal "fgij", @day_02.part2(sample_input_2)
+    # assert_equal "rmyxgdlihczskunpfijqcebtv", @day_02.part2(input("day_02.txt"))
+  end
 
   def sample_input_1
     "abcdef
