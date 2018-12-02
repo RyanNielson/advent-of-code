@@ -18,6 +18,6 @@ class Day01Test < Minitest::Test
     assert_equal 10, @day_01.part2("+3, +3, +4, -2, -4")
     assert_equal 5, @day_01.part2("-6, +3, +8, +5, -6")
     assert_equal 14, @day_01.part2("+7, +7, -2, -7, -4")
-    assert_equal 14, @day_01.part2(input("day_01.txt"))
+    assert_equal 76414, @day_01.part2(input("day_01.txt"))
   end
 end
