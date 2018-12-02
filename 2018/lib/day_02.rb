@@ -7,9 +7,7 @@ class Day02
   end
 
   def part2(input)
-    ids = split_input(input)
-
-    a = ids.product(ids).each do |id1, id2|
+    split_input(input).combination(2).each do |id1, id2|
       return remove_differing_characters(id1, id2) if difference_count(id1, id2) == 1
     end
   end
@@ -27,7 +25,7 @@ class Day02
   end
 
   def difference_count(id1, id2)
-    equivalences = id1.chars.zip(id2.chars).map{ |a, b| a == b }.count(false)
+    id1.chars.zip(id2.chars).map{ |a, b| a == b }.count(false)
   end
 
   def remove_differing_characters(id1, id2)

@@ -7,5 +7,5 @@ Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(reporter_opti
 
 def input(file)
   file_path = File.expand_path("../input/#{file}", __FILE__)
-  input = File.read(file_path).strip
+  File.read(file_path).strip
 end
