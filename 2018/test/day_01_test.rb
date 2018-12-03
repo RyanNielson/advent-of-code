@@ -9,7 +9,7 @@ class Day01Test < Minitest::Test
   def test_part1
     assert_equal 3, @day_01.part1("+1, +1, +1")
     assert_equal 0, @day_01.part1("+1, +1, -2")
-    assert_equal -6, @day_01.part1("-1, -2, -3")
+    assert_equal (-6), @day_01.part1("-1, -2, -3")
     assert_equal 547, @day_01.part1(input("day_01.txt"))
   end
 
