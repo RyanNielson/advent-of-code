@@ -1,5 +1,3 @@
-require "set"
-
 class Day03
   def part1(input)
     claims = split_input(input)
