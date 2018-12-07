@@ -12,7 +12,8 @@ class Day07Test < Minitest::Test
   end
 
   def test_part2
-    assert_equal 15, @day_07.part1(sample_input_1, 1)
+    assert_equal 15, @day_07.part2(sample_input_1, 2, 0)
+    assert_equal 973, @day_07.part2(input("day_07.txt"), 5, 60)
   end
 
   def test_letter_value
@@ -23,16 +24,13 @@ class Day07Test < Minitest::Test
   end
 
   def test_step_time
-    assert_equal 2, @day_07.step_time("A", 1)
+    assert_equal 1, @day_07.step_time("A", 0)
+    assert_equal 26, @day_07.step_time("Z", 0)
     assert_equal 86, @day_07.step_time("Z", 60)
   end
 
   def test_related_steps
     assert_equal sample_input_1_steps_2, @day_07.related_steps(sample_input_1)
-  end
-
-  def test_determine_starting_steps
-    assert_equal ["C"], @day_07.determine_starting_steps(sample_input_1_steps)
   end
 
   def sample_input_1
