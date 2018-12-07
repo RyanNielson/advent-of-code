@@ -11,11 +11,20 @@ class Day07Test < Minitest::Test
     assert_equal "BCADPVTJFZNRWXHEKSQLUYGMIO", @day_07.part1(input("day_07.txt"))
   end
 
+  def test_part2
+    assert_equal 15, @day_07.part1(sample_input_1, 1)
+  end
+
   def test_letter_value
     assert_equal 1, @day_07.letter_value("A")
     assert_equal 2, @day_07.letter_value("B")
     assert_equal 3, @day_07.letter_value("C")
     assert_equal 26, @day_07.letter_value("Z")
+  end
+
+  def test_step_time
+    assert_equal 2, @day_07.step_time("A", 1)
+    assert_equal 86, @day_07.step_time("Z", 60)
   end
 
   def test_related_steps

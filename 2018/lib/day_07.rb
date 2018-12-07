@@ -1,23 +1,20 @@
 class Day07
-  # def part1(input)
-  #   steps = related_steps(input)
-  #   result = []
-  #   while !steps.empty? do
-
-  #     next_step = steps.keys.sort.find{ |letter| steps[letter].empty? }
-
-  #     result << next_step
-  #     steps.delete(next_step)
-
-  #     steps.each do |key, dependencies|
-  #       steps[key] = dependencies.delete_if { |dep| result.include?(dep) }
-  #     end
-  #   end
-
-  #   result.join
-  # end
-
   def part1(input)
+    steps = related_steps(input)
+    result = []
+
+    while !steps.empty? do
+      next_step = steps.keys.sort.find{ |letter| steps[letter].empty? }
+
+      result << next_step
+      steps.delete(next_step)
+      steps.each { |key, dependencies| dependencies.delete(next_step) }
+    end
+
+    result.join
+  end
+
+  def part2(input, workers, step_duration)
     steps = related_steps(input)
     result = []
 
@@ -43,8 +40,8 @@ class Day07
     end
   end
 
-  def determine_starting_steps(steps)
-    (steps.values.flatten - steps.keys).uniq
+  def step_time(letter, step_duration)
+    letter_value(letter) + step_duration
   end
 
   def letter_value(letter)
