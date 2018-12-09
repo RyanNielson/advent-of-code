@@ -1,7 +1,7 @@
 require "test_helper"
 require "day_06"
 
-class Day04Test < Minitest::Test
+class Day06Test < Minitest::Test
   def setup
     @day_06 = Day06.new
   end
