@@ -6,9 +6,12 @@ class Day10Test < Minitest::Test
     @day_10 = Day10.new
   end
 
-  def test_parse
-    # assert_equal [9, 25], @day_09.parse(sample_input_1)
-    # assert_equal [459, 71790], @day_09.parse(input("day_09.txt"))
+  def test_part1
+    @day_10.part1(input("day_10.txt")) # 10240
+  end
+
+  def test_part2
+    @day_10.part2(input("day_10.txt")) # 10240
   end
 
   def sample_input_1
