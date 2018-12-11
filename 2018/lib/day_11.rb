@@ -4,43 +4,30 @@ class Day11
   def part1(input)
     serial_number = parse(input)
 
-    grid = build_grid(3)
-    power_level_grid =
-
-    power_levels = grid.reduce(Hash.new) do |h, (key, value)|
-      h[key] = value.sum { |coordinate| power_level(coordinate, serial_number) }
-      h
-    end
-
-    power_levels.max_by{ |k, v| v }.first.join(",")
+    max_power_level(serial_number, 3).first.join(",")
   end
 
-  # WE ALREADY HAVE PREVIOUS SUMS, SO WE CAN USE THAT PLUS NEW THAT WAY WE ONLY CALCULATE POWER LEVEL ONCE FOR EACH GRID
   def part2(input)
     serial_number = parse(input)
 
-    (1..300).to_a.reduce(Hash.new) do |h, square_size|
-      puts square_size
-
-      before = Time.now
-      grid = build_grid(square_size)
-      puts "TIME OF BUILD GRID: #{Time.now - before}"
-
-      before = Time.now
-      power_levels = grid.reduce(Hash.new) do |h, (key, value)|
-        h[key] = value.sum { |coordinate| power_level(coordinate, serial_number) }
-        h
-      end
-      # puts square_size
-      puts "TIME OF POWER LEVEL: #{Time.now - before}"
-
-      h[square_size] = power_levels.max_by{ |k, v| v }
-
-      # puts square_size
-      puts h[square_size].inspect
-
-      h
+    best = (1..16).to_a.reduce(Hash.new) do |b, square_size|
+      b[square_size] = max_power_level(serial_number, square_size)
+      b
     end
+
+    (bsize, ((bx, by), _)) = best.max_by{ |size, ((x, y), value) | value }
+    "#{bx},#{by},#{bsize}"
+  end
+
+  def max_power_level(serial_number, size)
+    grid = build_grid(size)
+
+    power_levels = grid.reduce(Hash.new) do |levels, (key, value)|
+      levels[key] = value.sum { |coordinate| power_level(coordinate, serial_number) }
+      levels
+    end
+
+    power_levels.max_by{ |k, v| v }
   end
 
   def power_level(coordinate, serial_number)
@@ -54,23 +41,16 @@ class Day11
     power_level - 5
   end
 
-  # TODO: We can probably shrink the size substantially when you get near the edge of the grid.
   def build_grid(square_size)
     offset_range = (0...square_size).to_a;
     offsets = offset_range.product(offset_range)
 
-    COORDINATES.reduce(Hash.new) do |grid, coordinate|
-      grid[coordinate] = build_square(coordinate, offsets)
-      grid
-    end
-  end
+    coords_range = (1..(300 - square_size + 1)).to_a
+    coordinates = coords_range.to_a.product(coords_range)
 
-  def power_level_grid
-    offset_range = (0...square_size).to_a;
-    offsets = offset_range.product(offset_range)
-
-    COORDINATES.reduce(Hash.new) do |grid, coordinate|
+    coordinates.reduce(Hash.new) do |grid, coordinate|
       grid[coordinate] = build_square(coordinate, offsets)
+
       grid
     end
   end
