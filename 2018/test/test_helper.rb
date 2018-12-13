@@ -9,3 +9,8 @@ def input(file)
   file_path = File.expand_path("../input/#{file}", __FILE__)
   File.read(file_path).strip
 end
+
+def input_no_strip(file)
+  file_path = File.expand_path("../input/#{file}", __FILE__)
+  File.read(file_path)
+end
