@@ -14,3 +14,8 @@ def input_no_strip(file)
   file_path = File.expand_path("../input/#{file}", __FILE__)
   File.read(file_path)
 end
+
+def input_integer(file)
+  file_path = File.expand_path("../input/#{file}", __FILE__)
+  File.read(file_path).strip.to_i
+end
