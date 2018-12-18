@@ -8,12 +8,12 @@ class Day17Test < Minitest::Test
 
   def test_part1
     assert_equal 57, @day_17.part1(sample_input_1)
-    # assert_equal 41027, @day_17.part1(input("day_17.txt"))
+    assert_equal 41027, @day_17.part1(input("day_17.txt"))
   end
 
   def test_part2
     assert_equal 29, @day_17.part2(sample_input_1)
-    # assert_equal 34214, @day_17.part2(input("day_17.txt"))
+    assert_equal 34214, @day_17.part2(input("day_17.txt"))
   end
 
   def sample_input_1
