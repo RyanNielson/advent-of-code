@@ -8,14 +8,11 @@ class Day20
   end
 
   def facility(input)
-    steps = parse(input)
-    grid = Hash.new
-    stack = []
     distance = 0
     position = [0, 0]
-    grid[position] = 0
+    stack = []
 
-    steps.each do |step|
+    parse(input).reduce(Hash[position => distance]) do |grid, step|
       case step
       when "(" then stack << [position, distance]
       when ")" then position, distance = stack.pop()
@@ -26,9 +23,9 @@ class Day20
 
         grid[position] = distance if !grid.has_key?(position) || distance < grid[position]
       end
-    end
 
-    grid
+      grid
+    end
   end
 
   def delta(direction)
