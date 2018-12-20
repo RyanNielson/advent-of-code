@@ -21,8 +21,7 @@ class Day20
       when ")" then position, distance = stack.pop()
       when "|" then position, distance = stack[-1]
       else
-        d = delta(step)
-        position = position.zip(d).map{|x, y| x + y}
+        position = position.zip(delta(step)).map{|x, y| x + y}
         distance += 1
 
         grid[position] = distance if !grid.has_key?(position) || distance < grid[position]
