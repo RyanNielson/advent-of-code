@@ -1,0 +1,12 @@
+{
+    "name": "Elixir VS Code Remote Container",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+        "eamodio.gitlens",
+        "mjmcloug.vscode-elixir",
+        "jakebecker.elixir-ls"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    }
+}
