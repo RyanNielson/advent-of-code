@@ -32,6 +32,32 @@ defmodule Day02 do
     noun * 100 + verb
   end
 
+  @doc """
+  An async version of part 2 that completes about 40% faster using Tasks.
+
+    ## Examples
+
+    iex> Helpers.input("day_02.txt") |> Day02.part2_async()
+    3376
+  """
+  def part2_async(input) do
+    memory = input |> parse()
+
+    results =
+      for noun <- 0..99, verb <- 0..99 do
+        Task.async(fn ->
+          {memory |> set_noun_and_verb(noun, verb) |> run(0) |> List.first(), noun, verb}
+        end)
+      end
+
+    {_, noun, verb} =
+      results
+      |> Enum.map(&Task.await/1)
+      |> Enum.find(results, fn {value, _, _} -> value == 19_690_720 end)
+
+    noun * 100 + verb
+  end
+
   defp parse(input) do
     input
     |> String.split(",", trim: true)
