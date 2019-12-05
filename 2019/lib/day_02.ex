@@ -2,7 +2,7 @@ defmodule Day02 do
   @doc """
   ## Examples
 
-    iex> Helpers.input("day_02.txt") |> Day02.part1()
+    iex> Helpers.input("day_02") |> Day02.part1()
     7_594_646
   """
   def part1(input) do
@@ -16,7 +16,7 @@ defmodule Day02 do
   @doc """
   ## Examples
 
-    iex> Helpers.input("day_02.txt") |> Day02.part2()
+    iex> Helpers.input("day_02") |> Day02.part2()
     3376
   """
   def part2(input) do
@@ -37,7 +37,7 @@ defmodule Day02 do
 
     ## Examples
 
-    iex> Helpers.input("day_02.txt") |> Day02.part2_async()
+    iex> Helpers.input("day_02") |> Day02.part2_async()
     3376
   """
   def part2_async(input) do

@@ -16,7 +16,7 @@ defmodule Day01 do
     iex> Day01.part1("100756")
     33583
 
-    iex> Helpers.input("day_01.txt") |> Day01.part1
+    iex> Helpers.input("day_01") |> Day01.part1
     3_391_707
   """
   def part1(input) do
@@ -40,7 +40,7 @@ defmodule Day01 do
     iex> Day01.part2("100756")
     50346
 
-    iex> File.read!("test/input/day_01.txt") |> Day01.part2
+    iex> File.read!("test/input/day_01") |> Day01.part2
     5_084_676
   """
   def part2(input) do
