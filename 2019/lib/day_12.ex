@@ -75,7 +75,6 @@ defmodule Day12 do
     end
   end
 
-
   defp apply_velocities(planets) do
     planets
     |> Enum.map(fn %{pos: {x, y, z}, vel: {vx, vy, vz}} ->
