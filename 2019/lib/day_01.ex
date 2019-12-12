@@ -21,7 +21,7 @@ defmodule Day01 do
   """
   def part1(input) do
     input
-    |> parse()
+    |> Helpers.parse_to_integer_list("\n")
     |> Enum.map(&required_fuel/1)
     |> Enum.sum()
   end
@@ -45,7 +45,7 @@ defmodule Day01 do
   """
   def part2(input) do
     input
-    |> parse()
+    |> Helpers.parse_to_integer_list("\n")
     |> Enum.map(&total_required_fuel/1)
     |> Enum.sum()
   end
@@ -58,11 +58,5 @@ defmodule Day01 do
     fuel = required_fuel(mass)
 
     fuel + total_required_fuel(fuel)
-  end
-
-  defp parse(input) do
-    input
-    |> String.split("\n", trim: true)
-    |> Enum.map(&String.to_integer/1)
   end
 end

@@ -7,14 +7,12 @@ defmodule Day02 do
   """
   def part1(input) do
     input
-    |> parse()
+    |> Helpers.parse_to_integer_list(",")
     |> set_noun_and_verb(12, 2)
     |> Intcode.init()
     |> Intcode.run()
     |> Intcode.memory()
     |> Map.get(0)
-
-    # Map.get(memory, 0)
   end
 
   @doc """
@@ -24,7 +22,7 @@ defmodule Day02 do
     3376
   """
   def part2(input) do
-    program = input |> parse()
+    program = input |> Helpers.parse_to_integer_list(",")
 
     results =
       for noun <- 0..99, verb <- 0..99 do
@@ -39,12 +37,6 @@ defmodule Day02 do
     {_, noun, verb} = Enum.find(results, fn {value, _, _} -> value == 19_690_720 end)
 
     noun * 100 + verb
-  end
-
-  defp parse(input) do
-    input
-    |> String.split(",", trim: true)
-    |> Enum.map(&String.to_integer/1)
   end
 
   defp set_noun_and_verb(memory, noun, verb) do

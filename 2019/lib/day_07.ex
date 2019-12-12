@@ -13,7 +13,7 @@ defmodule Day07 do
   def part1(input) do
     program =
       input
-      |> parse()
+      |> Helpers.parse_to_integer_list(",")
 
     permutations([0, 1, 2, 3, 4])
     |> Enum.map(fn phases ->
@@ -33,10 +33,4 @@ defmodule Day07 do
 
   def permutations(list),
     do: for(elem <- list, rest <- permutations(list -- [elem]), do: [elem | rest])
-
-  defp parse(input) do
-    input
-    |> String.split(",", trim: true)
-    |> Enum.map(&String.to_integer/1)
-  end
 end

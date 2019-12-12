@@ -7,7 +7,7 @@ defmodule Day05 do
   """
   def part1(input) do
     input
-    |> parse()
+    |> Helpers.parse_to_integer_list(",")
     |> Intcode.init([1])
     |> Intcode.run()
     |> Intcode.output()
@@ -36,16 +36,10 @@ defmodule Day05 do
   """
   def part2(input, val) do
     input
-    |> parse()
+    |> Helpers.parse_to_integer_list(",")
     |> Intcode.init([val])
     |> Intcode.run()
     |> Intcode.output()
     |> List.first()
-  end
-
-  defp parse(input) do
-    input
-    |> String.split(",", trim: true)
-    |> Enum.map(&String.to_integer/1)
   end
 end

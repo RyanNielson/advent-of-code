@@ -20,7 +20,7 @@ defmodule Day08 do
 
   ## Examples
     iex> Helpers.input("day_08") |> Day08.part2(25, 6)
-    :ok
+    ["0110010001100100110010010", "1001010001100101001010010", "1000001010100101001011110", "1000000100100101111010010", "1001000100100101001010010", "0110000100011001001010010"]
   """
   def part2(input, width, height) do
     input
@@ -32,18 +32,11 @@ defmodule Day08 do
     end)
     |> Enum.chunk_every(width)
     |> Enum.map(&Enum.join/1)
-    |> Enum.each(&IO.puts/1)
   end
 
   defp layers(input, width, height) do
     input
-    |> parse()
+    |> Helpers.parse_to_integer_list("")
     |> Enum.chunk_every(width * height)
-  end
-
-  defp parse(input) do
-    input
-    |> String.split("", trim: true)
-    |> Enum.map(&String.to_integer/1)
   end
 end

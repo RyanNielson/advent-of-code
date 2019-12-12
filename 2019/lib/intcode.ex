@@ -12,6 +12,8 @@ defmodule Intcode do
 
   def run(state) do
     [code, param1, param2, param3] = fetch_params(state)
+    # IO.inspect(state.memory)
+    # IO.inspect(code)
 
     case code do
       1 -> arithmetic(state, param1, param2, param3, &+/2) |> run()
@@ -22,6 +24,7 @@ defmodule Intcode do
       6 -> jump(state, param1, param2, &(&1 == 0)) |> run()
       7 -> compare(state, param1, param2, param3, &</2) |> run()
       8 -> compare(state, param1, param2, param3, &==/2) |> run()
+      9 -> adjust_relative_base(state, param1) |> run()
       99 -> halt(state)
     end
   end
@@ -29,6 +32,10 @@ defmodule Intcode do
   defp arithmetic(%{ip: ip} = state, param1, param2, param3, func) do
     value = func.(read(state, param1), read(state, param2))
     %{state | memory: write(state, param3, value), ip: ip + 4}
+  end
+
+  defp adjust_relative_base(%{base: base, ip: ip} = state, param1) do
+    %{state | base: base + read(state, param1), ip: ip + 2}
   end
 
   defp jump(%{ip: ip} = state, param1, param2, func) do
@@ -58,12 +65,20 @@ defmodule Intcode do
   end
 
   # TODO: Should these just return the whole state to keep things simple?
+  defp write(%{memory: memory, base: base}, {location, :r}, value) do
+    Map.put(memory, location + base, value)
+  end
+
   defp write(%{memory: memory}, {location, _}, value) do
     Map.put(memory, location, value)
   end
 
   defp read(%{memory: memory}, {location, :p}) do
     Map.get(memory, location, 0)
+  end
+
+  defp read(%{memory: memory, base: base}, {location, :r}) do
+    Map.get(memory, location + base, 0)
   end
 
   defp read(_state, {location, :i}) do
