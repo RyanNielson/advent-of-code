@@ -92,7 +92,6 @@ defmodule Intcode do
   end
 
   defp halt(state) do
-    IO.inspect("HALTED")
     %{state | halted: true}
   end
 
