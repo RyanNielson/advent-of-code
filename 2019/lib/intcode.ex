@@ -6,19 +6,21 @@ defmodule Intcode do
       ip: 0,
       input: input,
       output: [],
-      base: 0
+      base: 0,
+      halted: false
     }
   end
 
-  def run(state) do
+  # TODO: Perhaps add a halted status so I can tell the difference between halted and waiting for input.
+  def run(state, input \\ []) do
+    state = add_input(state, input)
     [code, param1, param2, param3] = fetch_params(state)
-    # IO.inspect(state.memory)
-    # IO.inspect(code)
 
     case code do
       1 -> arithmetic(state, param1, param2, param3, &+/2) |> run()
       2 -> arithmetic(state, param1, param2, param3, &*/2) |> run()
-      3 -> input(state, param1) |> run()
+      # 3 -> input(state, param1) |> run()
+      3 -> input(state, param1)
       4 -> output(state, param1) |> run()
       5 -> jump(state, param1, param2, &(&1 != 0)) |> run()
       6 -> jump(state, param1, param2, &(&1 == 0)) |> run()
@@ -55,13 +57,17 @@ defmodule Intcode do
     %{state | memory: write(state, param3, value), ip: ip + 4}
   end
 
+  # TODO: If this is called with no input we might want to pause and wait for more.
   defp input(%{ip: ip, input: [value | rest]} = state, param1) do
-    %{state | input: rest, memory: write(state, param1, value), ip: ip + 2}
+    %{state | input: rest, memory: write(state, param1, value), ip: ip + 2} |> run()
   end
+
+  defp input(%{input: []} = state, _), do: state
 
   defp output(%{ip: ip, output: output} = state, param1) do
     value = read(state, param1)
-    %{state | output: [value | output], ip: ip + 2}
+    # %{state | output: [value | output], ip: ip + 2}
+    %{state | output: output ++ [value], ip: ip + 2}
   end
 
   # TODO: Should these just return the whole state to keep things simple?
@@ -86,7 +92,8 @@ defmodule Intcode do
   end
 
   defp halt(state) do
-    state
+    IO.inspect("HALTED")
+    %{state | halted: true}
   end
 
   # This is gross but it works, maybe clean it up later.
@@ -116,6 +123,13 @@ defmodule Intcode do
     [String.to_integer(code) | params]
   end
 
+  # This may be slow, perhaps we should look into using a queue instead.
+  defp add_input(%{input: input} = state, new_input) do
+    %{state | input: input ++ new_input}
+  end
+
   def memory(%{memory: memory}), do: memory
   def output(%{output: output}), do: output
+
+  def clear_output(state), do: %{state | output: []}
 end
