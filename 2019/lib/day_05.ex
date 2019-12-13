@@ -11,7 +11,7 @@ defmodule Day05 do
     |> Intcode.init([1])
     |> Intcode.run()
     |> Intcode.output()
-    |> List.first()
+    |> List.last()
   end
 
   @doc """
@@ -40,6 +40,6 @@ defmodule Day05 do
     |> Intcode.init([val])
     |> Intcode.run()
     |> Intcode.output()
-    |> List.first()
+    |> List.last()
   end
 end
