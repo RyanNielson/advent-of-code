@@ -19,7 +19,6 @@ defmodule Intcode do
     case code do
       1 -> arithmetic(state, param1, param2, param3, &+/2) |> run()
       2 -> arithmetic(state, param1, param2, param3, &*/2) |> run()
-      # 3 -> input(state, param1) |> run()
       3 -> input(state, param1)
       4 -> output(state, param1) |> run()
       5 -> jump(state, param1, param2, &(&1 != 0)) |> run()
@@ -57,7 +56,6 @@ defmodule Intcode do
     %{state | memory: write(state, param3, value), ip: ip + 4}
   end
 
-  # TODO: If this is called with no input we might want to pause and wait for more.
   defp input(%{ip: ip, input: [value | rest]} = state, param1) do
     %{state | input: rest, memory: write(state, param1, value), ip: ip + 2} |> run()
   end
@@ -66,7 +64,6 @@ defmodule Intcode do
 
   defp output(%{ip: ip, output: output} = state, param1) do
     value = read(state, param1)
-    # %{state | output: [value | output], ip: ip + 2}
     %{state | output: output ++ [value], ip: ip + 2}
   end
 
@@ -115,9 +112,7 @@ defmodule Intcode do
       end)
       |> Enum.reverse()
       |> Enum.with_index(1)
-      |> Enum.map(fn {mode, i} ->
-        {Map.get(memory, ip + i, 0), mode}
-      end)
+      |> Enum.map(fn {mode, i} -> {Map.get(memory, ip + i, 0), mode} end)
 
     [String.to_integer(code) | params]
   end
