@@ -124,11 +124,15 @@ defmodule Intcode do
 
   # This may be slow, perhaps we should look into using a queue instead.
   defp add_input(%{input: input} = state, new_input) do
-    %{state | input: input ++ new_input}
+    %{state | input: input ++ List.flatten([new_input])}
   end
 
   def memory(%{memory: memory}), do: memory
   def output(%{output: output}), do: output
 
   def clear_output(state), do: %{state | output: []}
+
+  def pop_output(%{output: output} = state), do: {%{state | output: []}, output}
+
+  def halted?(%{halted: halted}), do: halted
 end
