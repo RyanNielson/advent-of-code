@@ -40,19 +40,16 @@ defmodule Day16 do
     |> String.to_integer()
   end
 
-  # TODO: This is ugly clean it up. ALSO SLOW, maybe use streams.
   defp patterns(length) do
     1..length
     |> Enum.map(fn position ->
       [0, 1, 0, -1]
-      |> Enum.flat_map(fn element ->
-        1..position
-        |> Enum.map(fn _ -> element end)
+      |> Stream.cycle()
+      |> Stream.flat_map(fn item ->
+        Stream.repeatedly(fn -> item end) |> Stream.take(position)
       end)
-      |> List.duplicate(length)
-      |> Enum.flat_map(& &1)
+      |> Enum.take(length + 1)
       |> Enum.drop(1)
-      |> Enum.take(length)
     end)
   end
 
