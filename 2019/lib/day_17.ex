@@ -34,6 +34,21 @@ defmodule Day17 do
     |> Enum.sum()
   end
 
+  @doc """
+  ## Examples
+    iex> Helpers.input("day_17") |> Day17.part2()
+    1681189
+  """
+  def part2(input) do
+    input
+      |> parse()
+      |> List.replace_at(0, 2)
+      |> Intcode.init('A,B,A,B,C,C,B,A,B,C\nL,10,R,10,L,10,L,10\nR,10,R,12,L,12\nR,12,L,12,R,6\nn\n')
+      |> Intcode.run()
+      |> Intcode.output()
+      |> List.last()
+  end
+
   defp scaffold?(grid, position) do
     Map.get(grid, position, ".") == "#"
   end
