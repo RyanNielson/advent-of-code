@@ -1,8 +1,8 @@
 defmodule Day18 do
   @doc """
   ## Examples
-    # iex> Helpers.input("day_18") |> Day18.part1()
-    # 223
+    iex> Helpers.input("day_18") |> Day18.part1()
+    223
   """
   def part1(input) do
     input
