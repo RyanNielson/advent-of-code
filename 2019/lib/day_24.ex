@@ -52,12 +52,12 @@ defmodule Day24 do
   end
 
   def adjacent_bugs_count({x, y}, grid) do
-    left = Map.get(grid, {x - 1, y}, ".")
-    up = Map.get(grid, {x, y - 1}, ".")
-    right = Map.get(grid, {x + 1, y}, ".")
-    down = Map.get(grid, {x, y + 1}, ".")
-
-    [left, up, right, down]
+    [
+      Map.get(grid, {x - 1, y}, "."),
+      Map.get(grid, {x, y - 1}, "."),
+      Map.get(grid, {x + 1, y}, "."),
+      Map.get(grid, {x, y + 1}, ".")
+    ]
     |> Enum.count(fn x -> x == "#" end)
   end
 
