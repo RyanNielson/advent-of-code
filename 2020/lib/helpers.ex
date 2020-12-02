@@ -11,4 +11,9 @@ defmodule Helpers do
     |> String.split(pattern, trim: true)
     |> Enum.map(&String.to_integer/1)
   end
+
+  def parse_to_list(input, pattern) do
+    input
+    |> String.split(pattern, trim: true)
+  end
 end
