@@ -18,28 +18,18 @@ defmodule Day05 do
   end
 
   defp seat_ids(seats) do
-    seats |> Enum.map(fn {row, col} -> row * 8 + col end)
+    seats
+    |> Enum.map(fn seat ->
+      seat
+      |> String.replace("F", "0")
+      |> String.replace("B", "1")
+      |> String.replace("L", "0")
+      |> String.replace("R", "1")
+      |> String.to_integer(2)
+    end)
   end
 
   defp parse(input) do
-    input
-    |> Helpers.parse_to_list("\n")
-    |> Enum.map(fn seat ->
-      {row, col} = String.split_at(seat, 7)
-
-      row_num =
-        row
-        |> String.replace("F", "0")
-        |> String.replace("B", "1")
-        |> String.to_integer(2)
-
-      col_num =
-        col
-        |> String.replace("L", "0")
-        |> String.replace("R", "1")
-        |> String.to_integer(2)
-
-      {row_num, col_num}
-    end)
+    input |> Helpers.parse_to_list("\n")
   end
 end
