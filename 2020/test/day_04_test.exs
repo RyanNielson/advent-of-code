@@ -1,4 +1,4 @@
-defmodule Day02Test do
+defmodule Day04Test do
   use ExUnit.Case
 
   import Day04
