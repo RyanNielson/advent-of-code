@@ -21,10 +21,8 @@ defmodule Day05 do
     seats
     |> Enum.map(fn seat ->
       seat
-      |> String.replace("F", "0")
-      |> String.replace("B", "1")
-      |> String.replace("L", "0")
-      |> String.replace("R", "1")
+      |> String.replace(~r/[FL]/, "0")
+      |> String.replace(~r/[BR]/, "1")
       |> String.to_integer(2)
     end)
   end
