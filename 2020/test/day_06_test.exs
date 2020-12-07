@@ -4,7 +4,7 @@ defmodule Day06Test do
   import Day06
   import TestHelper
 
-  describe "Day05" do
+  describe "Day06" do
     test "part1" do
       assert part1(input("day_06_example_1")) == 11
       assert part1(input("day_06")) == 6612
