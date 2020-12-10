@@ -4,7 +4,7 @@ defmodule Day09Test do
   import Day09
   import TestHelper
 
-  describe "Day08" do
+  describe "Day09" do
     test "part1" do
       assert part1(input("day_09_example_1"), 5) == 127
       assert part1(input("day_09")) == 32_321_523
