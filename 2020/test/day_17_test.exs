@@ -10,8 +10,9 @@ defmodule Day17Test do
       assert part1(input("day_17")) == 247
     end
 
-    # test "part2" do
-    #   assert part2(input("day_17_example_1")) == 848
-    # end
+    test "part2" do
+      assert part2(input("day_17_example_1")) == 848
+      assert part2(input("day_17")) == 1392
+    end
   end
 end
