@@ -17,6 +17,37 @@ defmodule Day20 do
     |> Enum.count()
   end
 
+  def part2(input) do
+    input
+    |> parse()
+    |> build_allergen_map()
+    |> determine_allergens(%{})
+    |> Enum.sort(fn {k1, _}, {k2, _} -> k1 <= k2 end)
+    |> Enum.map(fn {_, ingredient} -> ingredient end)
+    |> Enum.join(",")
+  end
+
+  defp determine_allergens(allergens_map, unique_allergens) when map_size(allergens_map) == 0 do
+    unique_allergens
+  end
+
+  defp determine_allergens(allergens_map, unique_allergens) do
+    {allergen, ingredients} = Enum.find(allergens_map, fn {_k, v} -> Enum.count(v) == 1 end)
+    ingredient = ingredients |> MapSet.to_list() |> List.first()
+
+    unique_allergens = Map.put(unique_allergens, allergen, ingredient)
+
+    {_, new_allergens_map} = Map.pop(allergens_map, allergen)
+
+    new_allergens_map =
+      new_allergens_map
+      |> Enum.reduce(%{}, fn {k, v}, acc ->
+        Map.put(acc, k, MapSet.delete(v, ingredient))
+      end)
+
+    determine_allergens(new_allergens_map, unique_allergens)
+  end
+
   defp build_allergen_map(foods) do
     foods
     |> Enum.reduce(%{}, fn {ingredients, allergens}, allergens_map ->
