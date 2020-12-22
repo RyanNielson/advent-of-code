@@ -1,4 +1,4 @@
-defmodule Day20 do
+defmodule Day21 do
   def part1(input) do
     foods =
       input
