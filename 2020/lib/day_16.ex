@@ -6,11 +6,27 @@ defmodule Day16 do
 
     nearby
     |> List.flatten()
-    |> Enum.reject(&matches_rules?(rules, &1))
+    |> Enum.reject(&matches_rule?(rules, &1))
     |> Enum.sum()
   end
 
-  defp matches_rules?(rules, value) do
+  def part2(input) do
+    %{"rules" => rules, "nearby" => nearby, "your" => your} =
+      input
+      |> parse()
+
+    valid_nearby =
+      nearby
+      |> Enum.filter(fn ticket ->
+        Enum.all?(ticket, &matches_rule?(rules, &1))
+      end)
+
+    # |> Enum.reject(&matches_rules?(rules, &1))
+
+    # |> Enum.sum()
+  end
+
+  defp matches_rule?(rules, value) do
     rules
     |> Map.values()
     |> Enum.any?(&MapSet.member?(&1, value))
@@ -24,7 +40,7 @@ defmodule Day16 do
       |> Enum.into(%{}, fn [name, a1, a2, b1, b2] ->
         {name,
          MapSet.union(
-           MapSet.new(String.to_integer(a1)..String.to_integer(a2)),
+           String.to_integer(a1)..String.to_integer(a2),
            MapSet.new(String.to_integer(b1)..String.to_integer(b2))
          )}
       end)

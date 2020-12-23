@@ -52,6 +52,22 @@ defmodule Day14 do
     Map.put(state, :mask, value)
   end
 
+  [{32, "0"}, {32, "1"}, {34, "0"}, {34, "1"}, {35, "0"}, {35, "1"}]
+
+  defp of([head | tail], accumulator) do
+    # IO.inspect(head)
+
+    head
+    |> Enum.flat_map(fn item ->
+      IO.inspect(item)
+      of(tail, accumulator ++ [item])
+    end)
+  end
+
+  defp of([], accumulator) do
+    accumulator
+  end
+
   # TODO: This doesn't work when more than 2 Xs
   defp instruction_2({"mem", address, value}, %{mask: mask, mem: mem} = state) do
     new_address =
@@ -69,7 +85,11 @@ defmodule Day14 do
         {_, mask_add} ->
           mask_add
       end)
-      |> IO.inspect()
+
+    # |> IO.inspect()
+
+    num_floating_indices = mask |> String.graphemes() |> Enum.count(fn c -> c == "X" end)
+    IO.inspect(num_floating_indices)
 
     # |> Enum.with_index()
 
@@ -78,28 +98,40 @@ defmodule Day14 do
       |> Enum.with_index()
       |> Enum.filter(fn {val, _} -> val == "X" end)
       |> Enum.map(&elem(&1, 1))
-      |> IO.inspect()
+
+    # |> IO.inspect()
 
     # product = for i <- floating_indices, j <- floating_indices, k <- ["0", "1"], do: {i, j, k}
 
     # indices_product = for i <- floating_indices, j <- floating_indices, do: {i, j}
 
     # IO.inspect(indices_product)
+    IO.inspect("SWTUFF")
+
     stuff =
       floating_indices
-      |> Enum.flat_map(fn index ->
+      |> Enum.map(fn index ->
         for i <- [index], k <- ["0", "1"], do: {i, k}
       end)
-      |> IO.inspect()
+
+    IO.inspect(stuff)
+
+    # TODO: This seems to work. to get a list of replacements.
+    stuff
+    |> of([])
+    |> Enum.chunk(num_floating_indices)
+    |> IO.inspect()
+
+    # |> IO.inspect()
 
     # This list is twice as long as it needs to be, but it probably doesn't matter.
-    indices_product = for i <- stuff, j <- stuff, elem(i, 0) != elem(j, 0), do: {i, j}
-    IO.inspect(indices_product)
+    # indices_product = for i <- stuff, j <- stuff, elem(i, 0) != elem(j, 0), do: {i, j}
+    # IO.inspect(indices_product)
 
-    indices_product
-    |> Enum.map(fn indices ->
-      IO.inspect(indices)
-    end)
+    # indices_product
+    # |> Enum.map(fn indices ->
+    #   IO.inspect(indices)
+    # end)
 
     # product = for i <- floating_indices, j <- floating_indices, k <- ["0", "1"], do: {i, j, k}
 
