@@ -1,5 +1,3 @@
-require "set"
-
 class Day01
   def part1(input)
     input.split(//).sum do |v| 
