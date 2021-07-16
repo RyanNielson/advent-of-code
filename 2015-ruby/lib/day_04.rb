@@ -1,4 +1,3 @@
-require 'set'
 require 'digest'
 
 class Day04
