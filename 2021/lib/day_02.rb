@@ -1,14 +1,16 @@
 class Day02
   def part1(input)
-    commands = commands(input)
-    pos, _, depth = move(commands)
-    pos * depth
+    input
+      .then { commands(_1) }
+      .then { move(_1) }
+      .then { |p, _, d| p * d }
   end
 
   def part2(input)
-    commands = commands(input)
-    pos, depth = move(commands)
-    pos * depth
+    input
+      .then { commands(_1) }
+      .then { move(_1) }
+      .then { |p, d| p * d }
   end
 
   private
