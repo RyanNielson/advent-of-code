@@ -1,12 +1,13 @@
 class Day02
   def part1(input)
     commands = commands(input)
-    move(commands).reduce(&:*)
+    pos, _, depth = move(commands)
+    pos * depth
   end
 
   def part2(input)
     commands = commands(input)
-    pos, depth = move2(commands)
+    pos, depth = move(commands)
     pos * depth
   end
 
@@ -20,19 +21,6 @@ class Day02
   end
 
   def move(commands)
-    commands.each_with_object([0, 0]) do |command, position|
-      case command
-      in ["forward", i]
-        position[0] += i
-      in ["down", i]
-        position[1] += i
-      in ["up", i]
-        position[1] -= i
-      end
-    end
-  end
-
-  def move2(commands)
     commands.each_with_object([0, 0, 0]) do |command, position|
       case command
       in ["forward", i]
