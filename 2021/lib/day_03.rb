@@ -1,31 +1,31 @@
 class Day03
   def part1(input)
-    values = input
-             .split("\n")
-             .map(&:chars)
-             .transpose
-
-    gamma_rate(values) * epsilon_rate(values)
+    numbers = numbers(input)
+    power_consumption(numbers, :max_by) * power_consumption(numbers, :min_by)
   end
 
   def part2(input)
-    input
-      .split("\n")
-      .map(&:chars)
-      .then { life_support_rating(_1) }
+    numbers = numbers(input)
+    calculate_rating(numbers, :max_by, "1") * calculate_rating(numbers, :min_by, "0")
   end
 
   private
 
-  def life_support_rating(values)
-    num_bits = values.map(&:length).max
-    calculate_rating(values, num_bits, :most_common) * calculate_rating(values, num_bits, :least_common)
+  def numbers(input)
+    input.split("\n").map(&:chars)
   end
 
-  def calculate_rating(values, num_bits, type)
-    num_bits.times do |i|
-      bits = values.transpose[i]
-      bit = method(type).call(bits)
+  def power_consumption(numbers, comparison)
+    numbers
+      .transpose
+      .map { |i| i.send(comparison) { |c| i.count(c) } }
+      .join
+      .to_i(2)
+  end
+
+  def calculate_rating(values, comparison, default)
+    values.map(&:length).max.times do |i|
+      bit = bit_criteria(values.transpose[i], comparison, default)
       values = values.filter { |num| num[i] == bit }
       break if values.count == 1
     end
@@ -33,37 +33,13 @@ class Day03
     values.flatten.join.to_i(2)
   end
 
-  def most_common(bits)
+  def bit_criteria(bits, comparison, default)
     counts = bits.tally
 
-    return "1" if counts["0"] == counts["1"]
+    return default if counts["0"] == counts["1"]
 
     counts
-      .max_by { |_k, v| v }
+      .send(comparison) { |_k, v| v }
       .first
-  end
-
-  def least_common(bits)
-    counts = bits.tally
-
-    return "0" if counts["0"] == counts["1"]
-
-    counts
-      .min_by { |_k, v| v }
-      .first
-  end
-
-  def gamma_rate(value)
-    value
-      .map { |i| i.max_by { |c| i.count(c) } }
-      .join
-      .to_i(2)
-  end
-
-  def epsilon_rate(value)
-    value
-      .map { |i| i.min_by { |c| i.count(c) } }
-      .join
-      .to_i(2)
   end
 end
