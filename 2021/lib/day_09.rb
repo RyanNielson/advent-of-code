@@ -2,17 +2,15 @@ require "set"
 
 class Day09
   def part1(input)
-    heightmap = Heightmap.new(input)
-    heightmap.low_points.sum { _1 + 1 }
+    Heightmap.new(input).low_points.sum { _1 + 1 }
   end
 
   def part2(input)
-    heightmap = Heightmap.new(input)
-    heightmap
-      .basins
-      .sort { |basin1, basin2| basin1.length <=> basin2.length }
-      .slice(-3..-1)
-      .reduce(1) { |acc, basin| acc * basin.length }
+    Heightmap.new(input)
+             .basins
+             .sort { |basin1, basin2| basin1.length <=> basin2.length }
+             .slice(-3..-1)
+             .reduce(1) { |acc, basin| acc * basin.length }
   end
 end
 
@@ -78,7 +76,7 @@ class Heightmap
 
         valid_neighbour_positions = neighbour_positions(check_position).reject do |position|
           neighbour_height = height(position)
-          neighbour_height.nil? || visited_positions.member?(position) || neighbour_height > 8 || neighbour_height <= height(check_position)
+          neighbour_height.nil? || visited_positions.member?(position) || neighbour_height >= 9 || neighbour_height <= height(check_position)
         end
 
         check_positions.concat(valid_neighbour_positions)
