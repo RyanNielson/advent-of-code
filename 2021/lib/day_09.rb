@@ -69,7 +69,7 @@ class Heightmap
       check_positions = [low_position]
 
       loop do
-        break if check_positions.empty?
+        break visited_positions if check_positions.empty?
 
         check_position = check_positions.pop
         visited_positions.add(check_position)
@@ -81,8 +81,6 @@ class Heightmap
 
         check_positions.concat(valid_neighbour_positions)
       end
-
-      visited_positions
     end
   end
 end
