@@ -21,3 +21,6 @@ Style/Documentation:
 
 Metrics/AbcSize:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
