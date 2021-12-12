@@ -16,11 +16,14 @@ class Day11
   end
 end
 
-# TODO: Using a hash with point struct would be cleaner.
+Position = Struct.new(:x, :y)
+
 class OctopusGrid
   def initialize(input)
-    @grid = input.split("\n").map do |line|
-      line.chars.map(&:to_i)
+    @grid = input.split("\n").each_with_index.each_with_object({}) do |(row, y), grid|
+      row.chars.each_with_index do |energy, x|
+        grid[Position.new(x, y)] = energy.to_i
+      end
     end
   end
 
@@ -30,12 +33,9 @@ class OctopusGrid
   end
 
   def increase_energy
-    @grid
-      .each_with_index do |row, y|
-        row.each_with_index do |_, x|
-          @grid[y][x] += 1
-        end
-      end
+    @grid.each do |position, energy|
+      @grid[position] = energy + 1
+    end
   end
 
   def flash
@@ -50,46 +50,39 @@ class OctopusGrid
       neighbours = neighbour_positions(position)
       neighbours
         .each do |n|
-          @grid[n[1]][n[0]] += 1
-          positions << n if @grid[n[1]][n[0]] > 9
+          @grid[n] += 1
+          positions << n if @grid[n] > 9
         end
     end
 
-    flashed.each { |x, y| @grid[y][x] = 0 }
+    flashed.each { |position| @grid[position] = 0 }
     flashed
   end
 
   def positions_to_flash
-    to_flash = []
     @grid
-      .each_with_index do |row, y|
-      row.each_with_index do |energy, x|
-        to_flash << [x, y] if energy > 9
+      .map do |(position, energy)|
+        position if energy > 9
       end
-    end
-
-    to_flash
+      .compact
   end
 
   def neighbour_positions(position)
-    x, y = position
     neighbours = [
-      [x + 1, y],
-      [x - 1, y],
-      [x, y + 1],
-      [x, y - 1],
-      [x + 1, y + 1],
-      [x + 1, y - 1],
-      [x - 1, y + 1],
-      [x - 1, y - 1]
+      Position.new(position.x + 1, position.y),
+      Position.new(position.x - 1, position.y),
+      Position.new(position.x, position.y + 1),
+      Position.new(position.x, position.y - 1),
+      Position.new(position.x + 1, position.y + 1),
+      Position.new(position.x + 1, position.y - 1),
+      Position.new(position.x - 1, position.y + 1),
+      Position.new(position.x - 1, position.y - 1)
     ]
 
-    neighbours.reject do |x, y|
-      x.negative? || y.negative? || y >= @grid.length || x >= @grid[0].length
-    end
+    neighbours.reject { |point| @grid[point].nil? }
   end
 
   def count
-    @grid.length * @grid[0].length
+    @grid.length
   end
 end
