@@ -1,6 +1,6 @@
 require "set"
+require "pqueue"
 
-# TODO: This whole thing a nightmare, refactor if there's time.
 class Day15
   def part1(input)
     grid = Grid.new(input)
@@ -23,29 +23,25 @@ class Day15
     end
     prev = {}
     q = grid.positions.to_set
+    queue = PQueue.new
+    queue.push([0, start])
 
     until q.empty?
-      min = min_distance(q, dist)
+      min = queue.shift.last
       q.delete(min)
 
       grid.neighbours(min).each do |neighbour|
         alt = dist[min] + grid[neighbour]
 
-        if alt < dist[neighbour]
-          dist[neighbour] = alt
-          prev[neighbour] = min
-        end
+        next unless alt < dist[neighbour]
+
+        dist[neighbour] = alt
+        prev[neighbour] = min
+        queue.push([alt, neighbour])
       end
     end
 
     prev
-  end
-
-  def min_distance(q, dist)
-    dist
-      .select { |k, _v| q.include?(k) }
-      .min_by { |_k, v| v }
-      .first
   end
 
   def shortest_path(grid, start, paths)
