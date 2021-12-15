@@ -22,13 +22,11 @@ class Day15
       d[position] = Float::INFINITY if position != start
     end
     prev = {}
-    q = grid.positions.to_set
     queue = PQueue.new
     queue.push([0, start])
 
-    until q.empty?
+    until queue.empty?
       min = queue.shift.last
-      q.delete(min)
 
       grid.neighbours(min).each do |neighbour|
         alt = dist[min] + grid[neighbour]
@@ -56,23 +54,15 @@ class Day15
   end
 
   def duplicated_input(input)
-    vertical_sections = []
-    5.times do |y|
-      rows = []
-      5.times do |x|
-        rows << input.split("\n").map do |i|
-          i.split("").map(&:to_i).map { |n| n + x + y }.map { |n| n > 9 ? n % 9 : n }.map(&:to_s)
+    5.times.map do |y|
+      5.times.map do |x|
+        input.split("\n").map do |i|
+          i.chars.map { _1.to_i + x + y }.map { _1 > 9 ? _1 % 9 : _1 }.map(&:to_s)
         end
       end
-
-      vertical_sections << rows
-                           .transpose
-                           .map { |line| line.map(&:join) }
-                           .map { |line| line.join }
-                           .join("\n")
+       .transpose.map { _1.map(&:join) }.map(&:join).join("\n")
     end
-
-    vertical_sections.join("\n")
+     .join("\n")
   end
 end
 
