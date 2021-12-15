@@ -20,5 +20,6 @@ class Day < Thor
     template "templates/new_day.rb.tt", "lib/day_#{number}.rb"
     template "templates/new_day_test.rb.tt", "test/day_#{number}_test.rb"
     create_file "test/input/day_#{number}", example_input
+    create_file "test/input/day_#{number}_example_1"
   end
 end
