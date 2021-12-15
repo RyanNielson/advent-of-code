@@ -1,6 +1,6 @@
 require "set"
 
-# TODO: This is a nightmare, refactor if there's time.
+# TODO: This whole thing a nightmare, refactor if there's time.
 class Day15
   def part1(input)
     grid = Grid.new(input)
@@ -9,6 +9,14 @@ class Day15
     shortest_path(grid, start, paths).sum { |position| grid[position] }
   end
 
+  def part2(input)
+    grid = Grid.new(duplicated_input(input))
+    start = Position.new(0, 0)
+    paths = dijkstra(grid, start)
+    shortest_path(grid, start, paths).sum { |position| grid[position] }
+  end
+
+  # Thanks Wikipedia!
   def dijkstra(grid, start)
     dist = grid.positions.each_with_object({ start => 0 }) do |position, d|
       d[position] = Float::INFINITY if position != start
@@ -51,7 +59,25 @@ class Day15
     path
   end
 
-  def part2(input); end
+  def duplicated_input(input)
+    vertical_sections = []
+    5.times do |y|
+      rows = []
+      5.times do |x|
+        rows << input.split("\n").map do |i|
+          i.split("").map(&:to_i).map { |n| n + x + y }.map { |n| n > 9 ? n % 9 : n }.map(&:to_s)
+        end
+      end
+
+      vertical_sections << rows
+                           .transpose
+                           .map { |line| line.map(&:join) }
+                           .map { |line| line.join }
+                           .join("\n")
+    end
+
+    vertical_sections.join("\n")
+  end
 end
 
 Position = Struct.new(:x, :y)

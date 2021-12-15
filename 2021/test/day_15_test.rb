@@ -11,10 +11,10 @@ class Day15Test < Minitest::Test
     assert_equal 619, day.part1(input("day_15"))
   end
 
-  # def test_part2
-  #   day = Day15.new
+  def test_part2
+    day = Day15.new
 
-  #   assert_equal 1, day.part2(input("day_15_example_1"))
-  #   assert_equal 1, day.part2(input("day_15"))
-  # end
+    assert_equal 315, day.part2(input("day_15_example_1"))
+    assert_equal 1, day.part2(input("day_15"))
+  end
 end
