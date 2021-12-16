@@ -83,18 +83,11 @@ class Packet
   end
 
   def version_sum
-    current_packet = self
-    packets_to_check = [current_packet]
-    versions = []
+    versions(self).sum
+  end
 
-    until packets_to_check.empty?
-      current_packet = packets_to_check.pop
-      versions << current_packet.version
-
-      packets_to_check.concat(current_packet.subpackets) unless current_packet.subpackets.empty?
-    end
-
-    versions.sum
+  def versions(packet)
+    [packet.version, packet.subpackets.map { |subpacket| versions(subpacket) }].flatten
   end
 
   def expression_value
