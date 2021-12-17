@@ -13,23 +13,19 @@ class Day17
 
   def handle_moves(input)
     target_area, min, max = parse_target_area(input)
-    highest_y = 0
-    velocities = []
 
     # There's probably a better or more correct way to limit the velocity window... but this works.
-    (0..max.x).each do |x|
+    (0..max.x).reduce([0, []]) do |(highest_y, velocities), x|
       (min.y..max.x).each do |y|
         velocity = Position.new(x, y)
         success, possible_highest_y = move(Position.new(0, 0), target_area, min, velocity)
 
-        if success
-          highest_y = possible_highest_y if possible_highest_y > highest_y
-          velocities << velocity
-        end
+        highest_y = possible_highest_y if success && possible_highest_y > highest_y
+        velocities << velocity if success
       end
-    end
 
-    [highest_y, velocities]
+      [highest_y, velocities]
+    end
   end
 
   def move(probe, target_area, min, velocity)
