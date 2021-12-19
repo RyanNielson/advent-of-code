@@ -55,11 +55,4 @@ class Day18Test < Minitest::Test
     assert_equal [[[[0, 7], 4], [[7, 8], [0, 13]]], [1, 1]], day.split([[[[0, 7], 4], [15, [0, 13]]], [1, 1]])
     assert_equal [[[[0, 7], 4], [[7, 8], [0, [6, 7]]]], [1, 1]], day.split([[[[0, 7], 4], [[7, 8], [0, 13]]], [1, 1]])
   end
-
-  def test_part2
-    day = Day18.new
-
-    # assert_equal 1, day.part2(input("day_18_example_1"))
-    # assert_equal 1, day.part2(input("day_18"))
-  end
 end
