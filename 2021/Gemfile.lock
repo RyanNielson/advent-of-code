@@ -1,7 +1,15 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (7.0.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
     ast (2.4.2)
+    concurrent-ruby (1.1.9)
+    i18n (1.8.11)
+      concurrent-ruby (~> 1.0)
     minitest (5.14.4)
     parallel (1.21.0)
     parser (3.0.3.1)
@@ -24,12 +32,15 @@ GEM
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     thor (1.1.0)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
 
 PLATFORMS
   arm64-darwin-20
 
 DEPENDENCIES
+  activesupport (~> 7.0)
   minitest (~> 5.0)
   pqueue
   rake (~> 13.0)

@@ -14,3 +14,5 @@ gem "rubocop", "~> 1.7"
 gem "thor"
 
 gem "pqueue"
+
+gem "activesupport", "~> 7.0"
