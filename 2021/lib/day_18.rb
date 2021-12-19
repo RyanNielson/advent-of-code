@@ -4,11 +4,7 @@ require "active_support/all"
 class Day18
   def part1(input)
     numbers = parse_numbers(input)
-
-    result = numbers.reduce do |first, second|
-      reduce([first, second])
-    end
-
+    result = numbers.reduce { |first, second| reduce([first, second]) }
     magnitude(result)
   end
 
