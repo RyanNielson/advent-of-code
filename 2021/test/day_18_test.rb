@@ -15,7 +15,7 @@ class Day18Test < Minitest::Test
     day = Day18.new
 
     assert_equal 3993, day.part2(input("day_18_example_4"))
-    # assert_equal 4173, day.part1(input("day_18"))
+    assert_equal 4706, day.part2(input("day_18"))
   end
 
   def test_reduce
