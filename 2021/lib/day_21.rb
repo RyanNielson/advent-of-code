@@ -14,8 +14,11 @@ class Day21
   end
 
   def move(positions, scores, player, deterministic_rolls)
-    amount = deterministic_rolls[0, 3].sum
+    move_and_score(positions, scores, player, deterministic_rolls[0, 3].sum)
     deterministic_rolls.rotate!(3)
+  end
+
+  def move_and_score(positions, scores, player, amount)
     positions[player] = (positions[player] + amount) % 10
     scores[player] += positions[player] + 1
   end
@@ -35,8 +38,7 @@ class Day21
     wins = POSSIBLE_ROLLS.map do |amount|
       positions_dup = positions.dup
       scores_dup = scores.dup
-      positions_dup[player] = (positions_dup[player] + amount) % 10
-      scores_dup[player] += positions_dup[player] + 1
+      move_and_score(positions_dup, scores_dup, player, amount)
       play(positions_dup, scores_dup, player.zero? ? 1 : 0, memo)
     end
 
