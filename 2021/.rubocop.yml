@@ -24,3 +24,6 @@ Metrics/AbcSize:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Security/Eval:
+  Enabled: false
