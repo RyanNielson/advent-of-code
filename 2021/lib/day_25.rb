@@ -17,8 +17,6 @@ end
 Point = Struct.new(:x, :y)
 
 class Map
-  attr_accessor :eastward, :southward, :max
-
   EAST = Point.new(1, 0)
   SOUTH = Point.new(0, 1)
 
