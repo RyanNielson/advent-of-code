@@ -15,9 +15,7 @@ defmodule Day02 do
     |> Enum.sum()
   end
 
-  defp convert_move({opponent, "X"}), do: {opponent, "A"}
-  defp convert_move({opponent, "Y"}), do: {opponent, "B"}
-  defp convert_move({opponent, "Z"}), do: {opponent, "C"}
+  defp convert_move({opponent, <<move>>}), do: {opponent, to_string(<<move - 23>>)}
 
   defp determine_move({"A", "X"}), do: {"A", "C"}
   defp determine_move({"B", "X"}), do: {"B", "A"}
@@ -29,9 +27,7 @@ defmodule Day02 do
 
   defp round_score({opponent, me}), do: shape_score(me) + outcome_score(opponent, me)
 
-  defp shape_score("A"), do: 1
-  defp shape_score("B"), do: 2
-  defp shape_score("C"), do: 3
+  defp shape_score(<<shape>>), do: shape - 64
 
   defp outcome_score("A", "B"), do: 6
   defp outcome_score("B", "C"), do: 6
