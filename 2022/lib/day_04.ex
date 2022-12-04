@@ -2,35 +2,26 @@ defmodule Day04 do
   def part1(input) do
     input
     |> parse()
-    |> Enum.count(&fully_contains?/1)
+    |> Enum.count(fn {{a1, a2}, {b1, b2}} ->
+      (a1 >= b1 && a2 <= b2) || (b1 >= a1 && b2 <= a2)
+    end)
   end
 
   def part2(input) do
     input
     |> parse()
-    |> Enum.count(&partially_contains?/1)
-  end
-
-  defp fully_contains?({{a1, a2}, {b1, b2}}) do
-    (a1 >= b1 && a2 <= b2) || (b1 >= a1 && b2 <= a2)
-  end
-
-  defp partially_contains?({{a1, a2}, {b1, b2}}) do
-    (a1 >= b1 && a1 <= b2) || (a2 >= b1 && a2 <= b2) || (b1 >= a1 && b1 <= a2) ||
-      (b2 >= a1 && b2 <= a2)
+    |> Enum.count(fn {{a1, a2}, {b1, b2}} ->
+      (a1 >= b1 && a1 <= b2) || (a2 >= b1 && a2 <= b2) || (b1 >= a1 && b1 <= a2) ||
+        (b2 >= a1 && b2 <= a2)
+    end)
   end
 
   defp parse(input) do
     input
     |> String.split("\n")
     |> Enum.map(fn line ->
-      line
-      |> String.split(",")
-      |> Enum.map(fn part ->
-        [left, right] = String.split(part, "-")
-        {String.to_integer(left), String.to_integer(right)}
-      end)
-      |> List.to_tuple()
+      [a, b, c, d] = Regex.run(~r/(\d+)-(\d+),(\d+)-(\d+)/, line, capture: :all_but_first)
+      {{String.to_integer(a), String.to_integer(b)}, {String.to_integer(c), String.to_integer(d)}}
     end)
   end
 end
