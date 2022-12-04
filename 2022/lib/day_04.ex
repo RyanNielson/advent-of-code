@@ -7,10 +7,17 @@ defmodule Day04 do
 
   def part2(input) do
     input
+    |> parse()
+    |> Enum.count(&partially_contains?/1)
   end
 
   defp fully_contains?({{a1, a2}, {b1, b2}}) do
     (a1 >= b1 && a2 <= b2) || (b1 >= a1 && b2 <= a2)
+  end
+
+  defp partially_contains?({{a1, a2}, {b1, b2}}) do
+    (a1 >= b1 && a1 <= b2) || (a2 >= b1 && a2 <= b2) || (b1 >= a1 && b1 <= a2) ||
+      (b2 >= a1 && b2 <= a2)
   end
 
   defp parse(input) do
