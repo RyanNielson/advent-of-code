@@ -26,13 +26,10 @@ defmodule Day07 do
     {path, update_sizes(path, sizes, String.to_integer(size))}
   end
 
-  defp update_sizes([], sizes, size) do
-    Map.update(sizes, "", size, fn current -> current + size end)
-  end
+  defp update_sizes([], sizes, size), do: Map.update(sizes, [], size, &(&1 + size))
 
-  defp update_sizes([_ | path] = whole, sizes, size) do
-    new_sizes = Map.update(sizes, Enum.join(whole, "/"), size, fn current -> current + size end)
-    update_sizes(path, new_sizes, size)
+  defp update_sizes([_ | rest] = path, sizes, size) do
+    update_sizes(rest, Map.update(sizes, path, size, &(&1 + size)), size)
   end
 
   defp parse(input) do
