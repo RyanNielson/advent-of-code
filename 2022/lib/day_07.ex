@@ -27,11 +27,11 @@ defmodule Day07 do
   end
 
   defp update_sizes([], sizes, size) do
-    Map.update(sizes, "", size, fn current_size -> current_size + size end)
+    Map.update(sizes, "", size, fn current -> current + size end)
   end
 
   defp update_sizes([_ | path] = whole, sizes, size) do
-    new_sizes = Map.update(sizes, Enum.join(whole, "/"), size, fn s -> s + size end)
+    new_sizes = Map.update(sizes, Enum.join(whole, "/"), size, fn current -> current + size end)
     update_sizes(path, new_sizes, size)
   end
 
