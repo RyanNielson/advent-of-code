@@ -1,82 +1,60 @@
 defmodule Day09 do
   def part1(input) do
     input
+    |> positions([{0, 0}, {0, 0}])
+  end
+
+  def part2(input) do
+    input
+    |> positions([{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
+  end
+
+  defp positions(steps_input, starting_knots) do
+    steps_input
     |> parse()
-    |> Enum.map_reduce({{0, 0}, {0, 0}}, fn step, {head, tail} ->
-      do_moves(step, head, tail)
+    |> Enum.map_reduce(starting_knots, fn step, knots ->
+      knots = move_knots(knots, step)
+      {List.last(knots), knots}
     end)
     |> elem(0)
     |> Enum.uniq()
     |> Enum.count()
   end
 
-  def part2(input) do
-    input
-    |> parse()
-    |> Enum.map_reduce(
-      [{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}],
-      fn step, [head, knot | rest] ->
-        {_, {new_head, new_knot}} = do_moves(step, head, knot)
-        stuff = do_stuff([new_head, new_knot] ++ rest)
+  defp move_knots([first | []], step), do: [move(first, step)]
 
-        {List.last(stuff), stuff}
-      end
-    )
-    |> elem(0)
-    |> Enum.uniq()
-    |> Enum.count()
-  end
+  defp move_knots([first, second | rest], step) do
+    first = move(first, step)
 
-  defp do_moves(step, head, tail) do
-    head = move(head, step)
-
-    tail =
-      case touching?(head, tail) do
-        true -> tail
-        false -> move(tail, determine_tail_step(head, tail))
-      end
-
-    {tail, {head, tail}}
-  end
-
-  defp do_stuff([head | []]), do: [head]
-
-  defp do_stuff([head, tail | rest]) do
-    tail =
-      case touching?(head, tail) do
-        true -> tail
-        false -> move(tail, determine_tail_step(head, tail))
-      end
-
-    [head | do_stuff([tail | rest])]
+    case touching?(first, second) do
+      true -> [first, second | rest]
+      false -> [first | move_knots([second | rest], determine_step(first, second))]
+    end
   end
 
   defp move({x, y}, {sx, sy}), do: {x + sx, y + sy}
 
-  defp determine_tail_step({hx, hy} = head, {tx, ty}) do
-    possible_steps =
-      case tx == hx || ty == hy do
-        true -> [{1, 0}, {-1, 0}, {0, 1}, {0, -1}]
-        false -> [{1, 1}, {1, -1}, {-1, 1}, {-1, -1}]
-      end
-
-    possible_steps
-    |> Enum.find(fn {sx, sy} -> touching?(head, {tx + sx, ty + sy}) end)
+  defp determine_step({x1, y1} = first, {x2, y2}) do
+    case x2 == x1 || y2 == y1 do
+      true -> [{1, 0}, {-1, 0}, {0, 1}, {0, -1}]
+      false -> [{1, 1}, {1, -1}, {-1, 1}, {-1, -1}]
+    end
+    |> Enum.find(fn {sx, sy} -> touching?(first, {x2 + sx, y2 + sy}) end)
   end
 
-  defp touching?(head, {tx, ty} = tail) do
+  defp touching?(first, {x, y}) do
     [
-      tail,
-      {tx + 1, ty},
-      {tx - 1, ty},
-      {tx, ty + 1},
-      {tx, ty - 1},
-      {tx + 1, ty + 1},
-      {tx + 1, ty - 1},
-      {tx - 1, ty + 1},
-      {tx - 1, ty - 1}
+      {x, y},
+      {x + 1, y},
+      {x - 1, y},
+      {x, y + 1},
+      {x, y - 1},
+      {x + 1, y + 1},
+      {x + 1, y - 1},
+      {x - 1, y + 1},
+      {x - 1, y - 1}
     ]
-    |> Enum.any?(&Kernel.==(&1, head))
+    |> Enum.any?(&Kernel.==(&1, first))
   end
 
   defp parse(input) do
