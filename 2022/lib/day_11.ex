@@ -3,10 +3,10 @@ defmodule Day11 do
     starting_monkeys = parse(input)
 
     0..19
-    |> Enum.reduce(starting_monkeys, fn round, monkeys ->
+    |> Enum.reduce(starting_monkeys, fn _round, monkeys ->
       0..(Enum.count(monkeys) - 1)
       |> Enum.reduce(monkeys, fn i, monkeys ->
-        {items, operation, test, if_true, if_false, _} = Enum.at(monkeys, i)
+        {items, operation, test, if_true, if_false, _} = Map.get(monkeys, i)
 
         items
         |> Enum.map(fn item ->
@@ -17,27 +17,56 @@ defmodule Day11 do
         end)
         |> Enum.reduce(monkeys, fn {item, from, to}, monkeys ->
           monkeys
-          |> List.update_at(from, fn {items, operation, test, if_true, if_false, inspections} ->
+          |> Map.update!(from, fn {items, operation, test, if_true, if_false, inspections} ->
             {[], operation, test, if_true, if_false, inspections + Enum.count(items)}
           end)
-          |> List.update_at(to, fn {items, operation, test, if_true, if_false, inspections} ->
-            {items ++ [item], operation, test, if_true, if_false, inspections}
+          |> Map.update!(to, fn {items, operation, test, if_true, if_false, inspections} ->
+            {[item | items], operation, test, if_true, if_false, inspections}
           end)
         end)
       end)
     end)
+    |> Map.values()
     |> Enum.map(&elem(&1, 5))
     |> Enum.sort(:desc)
     |> Enum.take(2)
     |> Enum.product()
-
-    # |> IO.inspect(charlists: :as_list)
   end
 
-  # defp
-
   def part2(input) do
-    input
+    starting_monkeys = parse(input)
+    mod = starting_monkeys |> Map.values() |> Enum.map(&elem(&1, 2)) |> Enum.reduce(&(&1 * &2))
+
+    0..9999
+    |> Enum.reduce(starting_monkeys, fn _round, monkeys ->
+      0..(Enum.count(monkeys) - 1)
+      |> Enum.reduce(monkeys, fn i, monkeys ->
+        {items, operation, test, if_true, if_false, _} = Map.get(monkeys, i)
+
+        items
+        |> Enum.map(fn item ->
+          {new, _} = Code.eval_string(operation, old: item)
+          new = rem(new, mod)
+          throw_to = if rem(new, test) == 0, do: if_true, else: if_false
+          {new, i, throw_to}
+        end)
+        |> Enum.reduce(monkeys, fn {item, from, to}, monkeys ->
+          monkeys
+          |> Map.update!(from, fn {items, operation, test, if_true, if_false, inspections} ->
+            {[], operation, test, if_true, if_false, inspections + Enum.count(items)}
+          end)
+          |> Map.update!(to, fn {items, operation, test, if_true, if_false, inspections} ->
+            {[item | items], operation, test, if_true, if_false, inspections}
+          end)
+        end)
+      end)
+    end)
+    # |> IO.inspect(charlists: :as_list)
+    |> Map.values()
+    |> Enum.map(&elem(&1, 5))
+    |> Enum.sort(:desc)
+    |> Enum.take(2)
+    |> Enum.product()
   end
 
   defp parse(input) do
@@ -75,5 +104,7 @@ defmodule Day11 do
 
       {starting_items, operation, test, if_true, if_false, 0}
     end)
+    |> Enum.with_index()
+    |> Enum.into(%{}, fn {monkey, i} -> {i, monkey} end)
   end
 end

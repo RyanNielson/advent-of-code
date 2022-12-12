@@ -9,8 +9,9 @@ defmodule Day11Test do
     assert part1(input("day_11")) == 120_056
   end
 
+  @tag timeout: :infinity
   test "part2" do
-    # assert part2(input("day_11_example_1")) == 123
-    # assert part2(input("day_11")) == 456
+    assert part2(input("day_11_example_1")) == 2_713_310_158
+    assert part2(input("day_11")) == 21_816_744_824
   end
 end
