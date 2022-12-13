@@ -2,7 +2,8 @@ defmodule Day13 do
   def part1(input) do
     input
     |> parse()
-    |> Enum.map(fn {packet1, packet2} -> compare(packet1, packet2) end)
+    |> Enum.chunk_every(2)
+    |> Enum.map(fn [packet1, packet2] -> compare(packet1, packet2) end)
     |> Enum.with_index(1)
     |> Enum.filter(fn {comparison, _} -> comparison == -1 end)
     |> Enum.map(&elem(&1, 1))
@@ -12,38 +13,25 @@ defmodule Day13 do
   def part2(input) do
     input
     |> parse()
-
-    # |> Kernel.++([{[[2]], [[6]]}])
-    # |>
-    # |> Enum.map(fn {packet1, packet2} -> compare(packet1, packet2) end)
-    # |> IO.inspect(charlists: :as_lists)
+    |> Kernel.++([[[2]], [[6]]])
+    |> Enum.sort(fn a, b -> compare(a, b) <= 0 end)
+    |> Enum.with_index(1)
+    |> Enum.filter(fn {packet, _} -> packet == [[2]] || packet == [[6]] end)
+    |> Enum.map(&elem(&1, 1))
+    |> Enum.product()
   end
 
-  defp compare([_ | _], []) do
-    1
-  end
+  defp compare([_ | _], []), do: 1
+  defp compare([], [_ | _]), do: -1
+  defp compare([], []), do: 0
 
-  defp compare([], [_ | _]) do
-    -1
-  end
-
-  defp compare([], []) do
-    0
-  end
-
-  # when is_list(a) and is_list(b) do
   defp compare([a | resta], [b | restb]) do
     result = compare(a, b)
     if result == 0, do: compare(resta, restb), else: result
   end
 
-  defp compare(a, b) when is_list(a) do
-    compare(a, [b])
-  end
-
-  defp compare(a, b) when is_list(b) do
-    compare([a], b)
-  end
+  defp compare(a, b) when is_list(a), do: compare(a, [b])
+  defp compare(a, b) when is_list(b), do: compare([a], b)
 
   defp compare(a, b) do
     cond do
@@ -55,12 +43,8 @@ defmodule Day13 do
 
   defp parse(input) do
     input
-    |> String.split("\n\n")
-    |> Enum.map(fn pair ->
-      pair
-      |> String.split("\n")
-      |> Enum.map(&(Code.eval_string(&1) |> elem(0)))
-      |> List.to_tuple()
-    end)
+    |> String.split("\n")
+    |> Enum.map(&(Code.eval_string(&1) |> elem(0)))
+    |> Enum.reject(&is_nil/1)
   end
 end
