@@ -4,9 +4,7 @@ defmodule Day14 do
       input
       |> parse()
 
-    cave
-    |> simulate(max_y, &fall/3)
-    |> Enum.count(fn {_k, v} -> v == "o" end)
+    simulate(cave, max_y, &fall/3)
   end
 
   def part2(input) do
@@ -14,16 +12,13 @@ defmodule Day14 do
       input
       |> parse()
 
-    cave
-    |> simulate(max_y + 2, &fall2/3)
-    |> Enum.count(fn {_, v} -> v == "o" end)
+    simulate(cave, max_y + 2, &fall2/3)
   end
 
   defp simulate(cave, max_y, fall_fn) do
     Stream.iterate(0, &(&1 + 1))
-    |> Enum.reduce_while(cave, fn _i, cave ->
-      fall_fn.({500, 0}, cave, max_y)
-    end)
+    |> Enum.reduce_while(cave, fn _i, cave -> fall_fn.({500, 0}, cave, max_y) end)
+    |> Enum.count(fn {_, v} -> v == "o" end)
   end
 
   defp fall({sx, sy}, cave, max_y) do
@@ -36,40 +31,17 @@ defmodule Day14 do
     end
   end
 
-  defp blocked?(position, cave) do
-    Map.get(cave, position) == "#" || Map.get(cave, position) == "o"
-  end
-
-  # defp fall2({sx, sy}, cave, max_y) do
-  #   cond do
-  #     blocked2?({500, 0}, cave, max_y) -> {:halt, cave}
-  #     !blocked2?({sx, sy + 1}, cave, max_y) -> fall2({sx, sy + 1}, cave, max_y)
-  #     !blocked2?({sx - 1, sy + 1}, cave, max_y) -> fall2({sx - 1, sy + 1}, cave, max_y)
-  #     !blocked2?({sx + 1, sy + 1}, cave, max_y) -> fall2({sx + 1, sy + 1}, cave, max_y)
-  #     true -> {:cont, Map.put(cave, {sx, sy}, "o")}
-  #   end
-  # end
-
   defp fall2({sx, sy}, cave, max_y) do
     cond do
-      blocked?({500, 0}, cave) ->
-        {:halt, cave}
-
-      !blocked?({sx, sy + 1}, cave) || sy + 1 == max_y ->
-        fall2({sx, sy + 1}, cave, max_y)
-
-      !blocked?({sx - 1, sy + 1}, cave) || sy + 1 == max_y ->
-        fall2({sx - 1, sy + 1}, cave, max_y)
-
-      !blocked?({sx + 1, sy + 1}, cave) || sy + 1 == max_y ->
-        fall2({sx + 1, sy + 1}, cave, max_y)
-
-      true ->
-        {:cont, Map.put(cave, {sx, sy}, "o")}
+      blocked?({500, 0}, cave, max_y) -> {:halt, cave}
+      !blocked?({sx, sy + 1}, cave, max_y) -> fall2({sx, sy + 1}, cave, max_y)
+      !blocked?({sx - 1, sy + 1}, cave, max_y) -> fall2({sx - 1, sy + 1}, cave, max_y)
+      !blocked?({sx + 1, sy + 1}, cave, max_y) -> fall2({sx + 1, sy + 1}, cave, max_y)
+      true -> {:cont, Map.put(cave, {sx, sy}, "o")}
     end
   end
 
-  defp blocked2?({_, y} = position, cave, max_y) do
+  defp blocked?({_, y} = position, cave, max_y \\ nil) do
     y == max_y || Map.get(cave, position) == "#" || Map.get(cave, position) == "o"
   end
 
