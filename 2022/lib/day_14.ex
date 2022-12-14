@@ -1,51 +1,45 @@
 defmodule Day14 do
-  def part1(input) do
-    {cave, max_y} =
-      input
-      |> parse()
+  def part1(input), do: find_solution(input, &fall/2)
 
-    simulate(cave, max_y, &fall/3)
+  def part2(input), do: find_solution(input, &fall2/2, 2)
+
+  defp find_solution(input, fall_fn, max_offset \\ 0) do
+    input |> parse(max_offset) |> simulate(fall_fn) |> Enum.count(fn {_, v} -> v == "o" end)
   end
 
-  def part2(input) do
-    {cave, max_y} =
-      input
-      |> parse()
-
-    simulate(cave, max_y + 2, &fall2/3)
-  end
-
-  defp simulate(cave, max_y, fall_fn) do
-    Stream.iterate(0, &(&1 + 1))
-    |> Enum.reduce_while(cave, fn _i, cave -> fall_fn.({500, 0}, cave, max_y) end)
-    |> Enum.count(fn {_, v} -> v == "o" end)
-  end
-
-  defp fall({sx, sy}, cave, max_y) do
-    cond do
-      sy >= max_y -> {:halt, cave}
-      !blocked?({sx, sy + 1}, cave) -> fall({sx, sy + 1}, cave, max_y)
-      !blocked?({sx - 1, sy + 1}, cave) -> fall({sx - 1, sy + 1}, cave, max_y)
-      !blocked?({sx + 1, sy + 1}, cave) -> fall({sx + 1, sy + 1}, cave, max_y)
-      true -> {:cont, Map.put(cave, {sx, sy}, "o")}
+  defp simulate(cave, fall_fn) do
+    case fall_fn.({500, 0}, cave) do
+      {:cont, cave} -> simulate(cave, fall_fn)
+      {:halt, cave} -> cave
     end
   end
 
-  defp fall2({sx, sy}, cave, max_y) do
+  defp fall({x, y}, cave) do
     cond do
-      blocked?({500, 0}, cave, max_y) -> {:halt, cave}
-      !blocked?({sx, sy + 1}, cave, max_y) -> fall2({sx, sy + 1}, cave, max_y)
-      !blocked?({sx - 1, sy + 1}, cave, max_y) -> fall2({sx - 1, sy + 1}, cave, max_y)
-      !blocked?({sx + 1, sy + 1}, cave, max_y) -> fall2({sx + 1, sy + 1}, cave, max_y)
-      true -> {:cont, Map.put(cave, {sx, sy}, "o")}
+      y >= Map.get(cave, :max_y) -> {:halt, cave}
+      !blocked?({x, y + 1}, cave) -> fall({x, y + 1}, cave)
+      !blocked?({x - 1, y + 1}, cave) -> fall({x - 1, y + 1}, cave)
+      !blocked?({x + 1, y + 1}, cave) -> fall({x + 1, y + 1}, cave)
+      true -> {:cont, Map.put(cave, {x, y}, "o")}
     end
   end
 
-  defp blocked?({_, y} = position, cave, max_y \\ nil) do
-    y == max_y || Map.get(cave, position) == "#" || Map.get(cave, position) == "o"
+  defp fall2({x, y}, cave) do
+    cond do
+      blocked?({500, 0}, cave) -> {:halt, cave}
+      !blocked?({x, y + 1}, cave, true) -> fall2({x, y + 1}, cave)
+      !blocked?({x - 1, y + 1}, cave, true) -> fall2({x - 1, y + 1}, cave)
+      !blocked?({x + 1, y + 1}, cave, true) -> fall2({x + 1, y + 1}, cave)
+      true -> {:cont, Map.put(cave, {x, y}, "o")}
+    end
   end
 
-  defp parse(input) do
+  defp blocked?({_, y} = position, cave, inf_floor \\ false) do
+    (inf_floor && y == Map.get(cave, :max_y)) || Map.get(cave, position) == "#" ||
+      Map.get(cave, position) == "o"
+  end
+
+  defp parse(input, max_offset) do
     cave =
       input
       |> String.split("\n")
@@ -65,6 +59,7 @@ defmodule Day14 do
         |> Enum.reduce(cave, &Map.put(&2, &1, "#"))
       end)
 
-    {cave, cave |> Map.keys() |> Enum.map(&elem(&1, 1)) |> Enum.max()}
+    cave
+    |> Map.put(:max_y, (cave |> Map.keys() |> Enum.map(&elem(&1, 1)) |> Enum.max()) + max_offset)
   end
 end
