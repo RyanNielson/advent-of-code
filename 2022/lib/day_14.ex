@@ -40,17 +40,36 @@ defmodule Day14 do
     Map.get(cave, position) == "#" || Map.get(cave, position) == "o"
   end
 
+  # defp fall2({sx, sy}, cave, max_y) do
+  #   cond do
+  #     blocked2?({500, 0}, cave, max_y) -> {:halt, cave}
+  #     !blocked2?({sx, sy + 1}, cave, max_y) -> fall2({sx, sy + 1}, cave, max_y)
+  #     !blocked2?({sx - 1, sy + 1}, cave, max_y) -> fall2({sx - 1, sy + 1}, cave, max_y)
+  #     !blocked2?({sx + 1, sy + 1}, cave, max_y) -> fall2({sx + 1, sy + 1}, cave, max_y)
+  #     true -> {:cont, Map.put(cave, {sx, sy}, "o")}
+  #   end
+  # end
+
   defp fall2({sx, sy}, cave, max_y) do
     cond do
-      blocked2?({500, 0}, cave, max_y) -> {:halt, cave}
-      !blocked2?({sx, sy + 1}, cave, max_y) -> fall2({sx, sy + 1}, cave, max_y)
-      !blocked2?({sx - 1, sy + 1}, cave, max_y) -> fall2({sx - 1, sy + 1}, cave, max_y)
-      !blocked2?({sx + 1, sy + 1}, cave, max_y) -> fall2({sx + 1, sy + 1}, cave, max_y)
-      true -> {:cont, Map.put(cave, {sx, sy}, "o")}
+      blocked?({500, 0}, cave) ->
+        {:halt, cave}
+
+      !blocked?({sx, sy + 1}, cave) || sy + 1 == max_y ->
+        fall2({sx, sy + 1}, cave, max_y)
+
+      !blocked?({sx - 1, sy + 1}, cave) || sy + 1 == max_y ->
+        fall2({sx - 1, sy + 1}, cave, max_y)
+
+      !blocked?({sx + 1, sy + 1}, cave) || sy + 1 == max_y ->
+        fall2({sx + 1, sy + 1}, cave, max_y)
+
+      true ->
+        {:cont, Map.put(cave, {sx, sy}, "o")}
     end
   end
 
-  defp blocked2?({_x, y} = position, cave, max_y) do
+  defp blocked2?({_, y} = position, cave, max_y) do
     y == max_y || Map.get(cave, position) == "#" || Map.get(cave, position) == "o"
   end
 
