@@ -38,12 +38,12 @@ defmodule Mix.Tasks.Day do
 
       test "part1" do
         assert part1(input("day_#{day}_example_1")) == 123
-        assert part1(input("day_#{day}")) == 456
+        # assert part1(input("day_#{day}")) == 456
       end
 
       test "part2" do
-        assert part2(input("day_#{day}_example_1")) == 123
-        assert part2(input("day_#{day}")) == 456
+        # assert part2(input("day_#{day}_example_1")) == 123
+        # assert part2(input("day_#{day}")) == 456
       end
     end
     """
