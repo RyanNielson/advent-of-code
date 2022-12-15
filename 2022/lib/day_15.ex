@@ -58,16 +58,16 @@ defmodule Day15 do
       end)
 
     checks
-    |> Enum.reduce([], fn checks, acc ->
-      checks
-      |> Enum.reduce(acc, fn {x, y} = position, acc ->
-        if x >= 0 && x <= max && y >= 0 && y <= max &&
-             Enum.all?(sensors, fn {sensor, v} -> manhattan_distance(sensor, position) > v end),
-           do: [position | acc],
-           else: acc
-      end)
+    |> Enum.reduce_while(nil, fn checks, acc ->
+      found =
+        checks
+        |> Enum.find(acc, fn {x, y} = position ->
+          x >= 0 && x <= max && y >= 0 && y <= max &&
+            Enum.all?(sensors, fn {sensor, v} -> manhattan_distance(sensor, position) > v end)
+        end)
+
+      if found, do: {:halt, found}, else: {:cont, nil}
     end)
-    |> List.first()
     |> then(fn {x, y} -> x * 4_000_000 + y end)
   end
 
