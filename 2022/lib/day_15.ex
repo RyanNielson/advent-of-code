@@ -29,11 +29,49 @@ defmodule Day15 do
     |> Kernel.-(1)
   end
 
-  defp manhattan_distance({x1, y1}, {x2, y2}), do: abs(x1 - x2) + abs(y1 - y2)
+  def part2(input, max) do
+    {sensors, checks} =
+      input
+      |> parse()
+      |> Enum.reduce({%{}, []}, fn {{sx, sy} = sensor, {bx, by}}, {sensors, checks} ->
+        d = manhattan_distance({sx, sy}, {bx, by})
+        min_y = sy - d - 1
+        max_y = sy + d + 1
 
-  def part2(input) do
-    input
+        spots =
+          min_y..max_y
+          |> Stream.flat_map(fn y ->
+            min_x = sx - d + abs(y - sy) - 1
+            max_x = sx + d - abs(y - sy) + 1
+
+            cond do
+              y == min_y -> [{sx, min_y}]
+              y == max_y -> [{sx, max_y}]
+              true -> [{min_x, y}, {max_x, y}]
+            end
+          end)
+
+        {
+          Map.put(sensors, sensor, d),
+          [spots | checks]
+        }
+      end)
+
+    checks
+    |> Enum.reduce([], fn checks, acc ->
+      checks
+      |> Enum.reduce(acc, fn {x, y} = position, acc ->
+        if x >= 0 && x <= max && y >= 0 && y <= max &&
+             Enum.all?(sensors, fn {sensor, v} -> manhattan_distance(sensor, position) > v end),
+           do: [position | acc],
+           else: acc
+      end)
+    end)
+    |> List.first()
+    |> then(fn {x, y} -> x * 4_000_000 + y end)
   end
+
+  defp manhattan_distance({x1, y1}, {x2, y2}), do: abs(x1 - x2) + abs(y1 - y2)
 
   defp parse(input) do
     input
