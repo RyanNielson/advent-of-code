@@ -2,7 +2,7 @@ defmodule Day18 do
   def part1(input) do
     input
     |> parse()
-    |> unconnected_faces()
+    |> count_faces(false)
   end
 
   def part2(input) do
@@ -25,13 +25,7 @@ defmodule Day18 do
 
     cubes
     |> edge_cubes(initial_edge_positions, {{min_x, min_y, min_z}, {max_x, max_y, max_z}})
-    |> Enum.map(fn {x, y, z} ->
-      [{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}]
-      |> Enum.count(fn {ox, oy, oz} ->
-        MapSet.member?(cubes, {x + ox, y + oy, z + oz})
-      end)
-    end)
-    |> Enum.sum()
+    |> count_faces(true, cubes)
   end
 
   defp edge_cubes(_, edges, {{min_x, min_y, min_z}, {max_x, max_y, max_z}})
@@ -58,10 +52,7 @@ defmodule Day18 do
       false ->
         edge_cubes(
           cubes,
-          MapSet.union(
-            edges,
-            new_edges
-          ),
+          MapSet.union(edges, new_edges),
           {{min_x + 1, min_y + 1, min_z + 1}, {max_x - 1, max_y - 1, max_z - 1}}
         )
     end
@@ -78,19 +69,22 @@ defmodule Day18 do
       end)
       |> then(fn {new_edges, leftovers} -> {MapSet.new(new_edges), MapSet.new(leftovers)} end)
 
-    if !Enum.empty?(new_edges) && !Enum.empty?(leftovers) do
-      next_edges(leftovers, MapSet.union(edges, new_edges))
-    else
-      MapSet.union(edges, new_edges)
+    case !Enum.empty?(new_edges) && !Enum.empty?(leftovers) do
+      true -> next_edges(leftovers, MapSet.union(edges, new_edges))
+      false -> MapSet.union(edges, new_edges)
     end
   end
 
-  defp unconnected_faces(cubes) do
+  defp count_faces(cubes, connected?), do: count_faces(cubes, connected?, cubes)
+
+  defp count_faces(cubes, connected?, all_cubes) do
     cubes
     |> Enum.map(fn {x, y, z} ->
       [{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}]
       |> Enum.count(fn {ox, oy, oz} ->
-        !MapSet.member?(cubes, {x + ox, y + oy, z + oz})
+        if connected?,
+          do: MapSet.member?(all_cubes, {x + ox, y + oy, z + oz}),
+          else: !MapSet.member?(all_cubes, {x + ox, y + oy, z + oz})
       end)
     end)
     |> Enum.sum()
@@ -99,12 +93,11 @@ defmodule Day18 do
   defp parse(input) do
     input
     |> String.split("\n")
-    |> Enum.map(fn line ->
+    |> Enum.into(MapSet.new(), fn line ->
       line
       |> String.split(",")
       |> Enum.map(&String.to_integer/1)
       |> List.to_tuple()
     end)
-    |> MapSet.new()
   end
 end
