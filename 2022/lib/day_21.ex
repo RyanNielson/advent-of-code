@@ -4,7 +4,7 @@ defmodule Day21 do
       input
       |> parse()
 
-    yell(monkeys, Map.get(monkeys, "root"))
+    yell(monkeys, Map.get(monkeys, :root))
   end
 
   def part2(input) do
@@ -13,13 +13,12 @@ defmodule Day21 do
 
   defp yell(_, a) when is_integer(a), do: a
 
-  defp yell(monkeys, {a, op, b}) do
-    case op do
-      "+" -> yell(monkeys, Map.get(monkeys, a)) + yell(monkeys, Map.get(monkeys, b))
-      "-" -> yell(monkeys, Map.get(monkeys, a)) - yell(monkeys, Map.get(monkeys, b))
-      "*" -> yell(monkeys, Map.get(monkeys, a)) * yell(monkeys, Map.get(monkeys, b))
-      "/" -> div(yell(monkeys, Map.get(monkeys, a)), yell(monkeys, Map.get(monkeys, b)))
-    end
+  defp yell(monkeys, {a, b, job}) do
+    Code.eval_string(job, [
+      {a, yell(monkeys, Map.get(monkeys, a))},
+      {b, yell(monkeys, Map.get(monkeys, b))}
+    ])
+    |> elem(0)
   end
 
   def parse(input) do
@@ -30,11 +29,15 @@ defmodule Day21 do
 
       job =
         case Integer.parse(job) do
-          :error -> job |> String.split(" ") |> List.to_tuple()
-          {number, _} -> number
+          :error ->
+            [a, _, b] = job |> String.split(" ") |> Enum.map(&String.to_atom/1)
+            {a, b, job}
+
+          {number, _} ->
+            number
         end
 
-      {name, job}
+      {String.to_atom(name), job}
     end)
   end
 end
