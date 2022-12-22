@@ -10,7 +10,9 @@ defmodule Day21Test do
   end
 
   test "part2" do
-    # assert part2(input("day_21_example_1")) == 301
-    # assert part2(input("day_21")) == 456
+    assert part2(input("day_21_example_1")) == 301
+    # TOO HIGH 5387037868883
+    # CORRECT: 3757272361782
+    assert part2(input("day_21")) == 3_757_272_361_782
   end
 end
