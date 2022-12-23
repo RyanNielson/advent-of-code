@@ -7,30 +7,7 @@ defmodule Day23 do
     {moved_elves, _} =
       0..9
       |> Enum.reduce({elves, ["N", "S", "W", "E"]}, fn _, {elves, directions} ->
-        proposals =
-          elves
-          |> Enum.filter(&has_adjacent_elf?(&1, elves))
-          |> Enum.map(fn elf ->
-            {elf, propose_move(elf, elves, directions)}
-          end)
-          |> Enum.reject(fn {_, proposal} -> is_nil(proposal) end)
-
-        new_elves =
-          proposals
-          |> Enum.reject(fn {elf, proposal} ->
-            Enum.any?(proposals, fn {other_elf, other_proposal} ->
-              elf != other_elf && proposal == other_proposal
-            end)
-          end)
-          |> Enum.reduce(elves, fn {elf, proposal}, elves ->
-            elves
-            |> MapSet.delete(elf)
-            |> MapSet.put(proposal)
-          end)
-
-        [first | rest] = directions
-
-        {new_elves, rest ++ [first]}
+        simulate(elves, directions)
       end)
 
     {{min_x, _}, {max_x, _}} = Enum.min_max_by(moved_elves, fn {x, _} -> x end)
@@ -40,6 +17,48 @@ defmodule Day23 do
 
     positions
     |> Enum.count(&(!MapSet.member?(moved_elves, &1)))
+  end
+
+  def part2(input) do
+    elves =
+      input
+      |> parse()
+
+    Stream.iterate(0, &(&1 + 1))
+    |> Enum.reduce_while({elves, ["N", "S", "W", "E"]}, fn round, {elves, directions} ->
+      {new_elves, new_directions} = simulate(elves, directions)
+
+      if MapSet.equal?(elves, new_elves),
+        do: {:halt, round + 1},
+        else: {:cont, {new_elves, new_directions}}
+    end)
+  end
+
+  defp simulate(elves, directions) do
+    proposals =
+      elves
+      |> Enum.filter(&has_adjacent_elf?(&1, elves))
+      |> Enum.map(fn elf ->
+        {elf, propose_move(elf, elves, directions)}
+      end)
+      |> Enum.reject(fn {_, proposal} -> is_nil(proposal) end)
+
+    new_elves =
+      proposals
+      |> Enum.reject(fn {elf, proposal} ->
+        Enum.any?(proposals, fn {other_elf, other_proposal} ->
+          elf != other_elf && proposal == other_proposal
+        end)
+      end)
+      |> Enum.reduce(elves, fn {elf, proposal}, elves ->
+        elves
+        |> MapSet.delete(elf)
+        |> MapSet.put(proposal)
+      end)
+
+    [first | rest] = directions
+
+    {new_elves, rest ++ [first]}
   end
 
   defp propose_move({x, y}, elves, directions) do
@@ -90,10 +109,6 @@ defmodule Day23 do
     |> Enum.any?(fn position ->
       MapSet.member?(elves, position)
     end)
-  end
-
-  def part2(input) do
-    input
   end
 
   defp parse(input) do
