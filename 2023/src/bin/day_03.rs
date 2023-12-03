@@ -14,7 +14,22 @@ struct PartNumber {
     width: usize,
 }
 
-fn part_1(input: &str) -> u32 {
+fn is_part_number(symbol: &Symbol, number: &PartNumber) -> bool {
+    let positions_to_check = [
+        (symbol.x - 1, symbol.y - 1),
+        (symbol.x, symbol.y - 1),
+        (symbol.x + 1, symbol.y - 1),
+        (symbol.x - 1, symbol.y),
+        (symbol.x + 1, symbol.y),
+        (symbol.x - 1, symbol.y + 1),
+        (symbol.x, symbol.y + 1),
+        (symbol.x + 1, symbol.y + 1),
+    ];
+
+    (number.x..number.x + number.width).any(|x| positions_to_check.contains(&(x, number.y)))
+}
+
+fn numbers_and_symbols(input: &str) -> (Vec<PartNumber>, Vec<Symbol>) {
     let number_regex = Regex::new(r"(\d+)").unwrap();
     let symbol_regex = Regex::new(r"([^\d.\s]+)").unwrap();
     let mut all_numbers = Vec::new();
@@ -49,26 +64,16 @@ fn part_1(input: &str) -> u32 {
         all_symbols.append(&mut symbols);
     }
 
-    // This could perhaps be a problem is there were multiple symbols touching one number, but it
-    // works with example input.
+    (all_numbers, all_symbols)
+}
+
+fn part_1(input: &str) -> u32 {
+    let (all_numbers, all_symbols) = numbers_and_symbols(input);
+
     let mut part_numbers = Vec::new();
     for symbol in &all_symbols {
         for number in &all_numbers {
-            let positions_to_check = [
-                (symbol.x - 1, symbol.y - 1),
-                (symbol.x, symbol.y - 1),
-                (symbol.x + 1, symbol.y - 1),
-                (symbol.x - 1, symbol.y),
-                (symbol.x + 1, symbol.y),
-                (symbol.x - 1, symbol.y + 1),
-                (symbol.x, symbol.y + 1),
-                (symbol.x + 1, symbol.y + 1),
-            ];
-
-            let is_part_number = (number.x..number.x + number.width)
-                .any(|x| positions_to_check.contains(&(x, number.y)));
-
-            if is_part_number {
+            if is_part_number(symbol, number) {
                 part_numbers.push(number.value);
             }
         }
@@ -78,7 +83,22 @@ fn part_1(input: &str) -> u32 {
 }
 
 fn part_2(input: &str) -> u32 {
-    1
+    let (all_numbers, all_symbols) = numbers_and_symbols(input);
+    let mut gear_ratios: Vec<u32> = Vec::new();
+    for symbol in &all_symbols {
+        let mut symbol_parts = Vec::new();
+        for number in &all_numbers {
+            if is_part_number(symbol, number) {
+                symbol_parts.push(number.value);
+            }
+        }
+
+        if symbol_parts.len() == 2 {
+            gear_ratios.push(symbol_parts.iter().product());
+        }
+    }
+
+    gear_ratios.iter().sum()
 }
 
 fn main() {
@@ -99,7 +119,7 @@ mod tests {
 
     #[test]
     fn test_part_2() {
-        // assert_eq!(part_2(include_str!("inputs/day_03_example_1")), 2286);
-        // assert_eq!(part_2(include_str!("inputs/day_03")), 78_669);
+        assert_eq!(part_2(include_str!("inputs/day_03_example_1")), 467_835);
+        assert_eq!(part_2(include_str!("inputs/day_03")), 87_605_697);
     }
 }
