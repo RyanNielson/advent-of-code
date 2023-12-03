@@ -67,16 +67,20 @@ fn numbers_and_symbols(input: &str) -> (Vec<PartNumber>, Vec<Symbol>) {
     (all_numbers, all_symbols)
 }
 
+fn adjacent_numbers(all_numbers: &Vec<PartNumber>, symbol: &Symbol, part_numbers: &mut Vec<u32>) {
+    for number in all_numbers {
+        if is_part_number(symbol, number) {
+            part_numbers.push(number.value);
+        }
+    }
+}
+
 fn part_1(input: &str) -> u32 {
     let (all_numbers, all_symbols) = numbers_and_symbols(input);
 
     let mut part_numbers = Vec::new();
     for symbol in &all_symbols {
-        for number in &all_numbers {
-            if is_part_number(symbol, number) {
-                part_numbers.push(number.value);
-            }
-        }
+        adjacent_numbers(&all_numbers, symbol, &mut part_numbers);
     }
 
     part_numbers.iter().sum::<u32>()
@@ -87,11 +91,7 @@ fn part_2(input: &str) -> u32 {
     let mut gear_ratios: Vec<u32> = Vec::new();
     for symbol in &all_symbols {
         let mut symbol_parts = Vec::new();
-        for number in &all_numbers {
-            if is_part_number(symbol, number) {
-                symbol_parts.push(number.value);
-            }
-        }
+        adjacent_numbers(&all_numbers, symbol, &mut symbol_parts);
 
         if symbol_parts.len() == 2 {
             gear_ratios.push(symbol_parts.iter().product());
