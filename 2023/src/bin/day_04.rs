@@ -11,7 +11,6 @@ fn part_1(input: &str) -> u32 {
     input
         .lines()
         .map(|line| {
-            // let (_, right) = line.split_once(":").unwrap();
             let mut parts = line.split([':', '|']);
             let _ = parts.next();
             let winning_numbers = number_string_to_ints(parts.next().unwrap());
@@ -29,8 +28,29 @@ fn part_1(input: &str) -> u32 {
         .sum()
 }
 
-fn part_2(_input: &str) -> u32 {
-    1
+fn part_2(input: &str) -> u32 {
+    let card_points = input
+        .lines()
+        .map(|line| {
+            let mut parts = line.split([':', '|']);
+            let winning_numbers = number_string_to_ints(parts.nth(1).unwrap());
+            let card_numbers = number_string_to_ints(parts.next().unwrap());
+            card_numbers
+                .intersection(&winning_numbers)
+                .collect::<HashSet<_>>()
+                .len()
+        })
+        .collect::<Vec<_>>();
+
+    let mut card_counts = vec![1; card_points.len()];
+
+    for (i, points) in card_points.iter().enumerate() {
+        for j in (i + 1)..(i + points + 1) {
+            card_counts[j] += card_counts[i];
+        }
+    }
+
+    card_counts.iter().sum()
 }
 
 fn main() {
@@ -46,12 +66,12 @@ mod tests {
     #[test]
     fn test_part_1() {
         assert_eq!(part_1(include_str!("inputs/day_04_example_1")), 13);
-        assert_eq!(part_1(include_str!("inputs/day_04")), 22193);
+        assert_eq!(part_1(include_str!("inputs/day_04")), 22_193);
     }
 
     #[test]
     fn test_part_2() {
-        // assert_eq!(part_2(include_str!("inputs/day_04_example_1")), 467_835);
-        // assert_eq!(part_2(include_str!("inputs/day_04")), 87_605_697);
+        assert_eq!(part_2(include_str!("inputs/day_04_example_1")), 30);
+        assert_eq!(part_2(include_str!("inputs/day_04")), 5_625_994);
     }
 }
