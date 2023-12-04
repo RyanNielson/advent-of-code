@@ -7,20 +7,23 @@ fn number_string_to_ints(numbers_string: &str) -> HashSet<u32> {
         .collect::<HashSet<_>>()
 }
 
+fn winning_card_numbers_len(line: &str) -> usize {
+    let mut parts = line.split([':', '|']);
+    let winning_numbers = number_string_to_ints(parts.nth(1).unwrap());
+    let card_numbers = number_string_to_ints(parts.next().unwrap());
+    card_numbers
+        .intersection(&winning_numbers)
+        .collect::<HashSet<_>>()
+        .len()
+}
+
 fn part_1(input: &str) -> u32 {
     input
         .lines()
         .map(|line| {
-            let mut parts = line.split([':', '|']);
-            let _ = parts.next();
-            let winning_numbers = number_string_to_ints(parts.next().unwrap());
-            let card_numbers = number_string_to_ints(parts.next().unwrap());
-            let winning_card_numbers = card_numbers
-                .intersection(&winning_numbers)
-                .collect::<HashSet<_>>();
-
-            if !winning_card_numbers.is_empty() {
-                2u32.pow((winning_card_numbers.len() - 1) as u32)
+            let winning_card_numbers_len = winning_card_numbers_len(line);
+            if winning_card_numbers_len > 0 {
+                2u32.pow((winning_card_numbers_len - 1) as u32)
             } else {
                 0
             }
@@ -31,15 +34,7 @@ fn part_1(input: &str) -> u32 {
 fn part_2(input: &str) -> u32 {
     let card_points = input
         .lines()
-        .map(|line| {
-            let mut parts = line.split([':', '|']);
-            let winning_numbers = number_string_to_ints(parts.nth(1).unwrap());
-            let card_numbers = number_string_to_ints(parts.next().unwrap());
-            card_numbers
-                .intersection(&winning_numbers)
-                .collect::<HashSet<_>>()
-                .len()
-        })
+        .map(winning_card_numbers_len)
         .collect::<Vec<_>>();
 
     let mut card_counts = vec![1; card_points.len()];
