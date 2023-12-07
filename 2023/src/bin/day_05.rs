@@ -56,7 +56,7 @@ fn part_1(input: &str) -> u64 {
         .unwrap()
 }
 
-fn part_2(input: &str) -> u32 {
+fn part_2(_input: &str) -> u32 {
     6
 }
 
