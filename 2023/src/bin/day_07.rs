@@ -28,10 +28,8 @@ enum Card {
     Four,
     Three,
     Two,
+    Joker,
 }
-
-#[derive(Debug, PartialEq, Eq)]
-struct ParseCardError;
 
 impl From<char> for Card {
     fn from(value: char) -> Self {
@@ -49,6 +47,7 @@ impl From<char> for Card {
             '4' => Card::Four,
             '3' => Card::Three,
             '2' => Card::Two,
+            'j' => Card::Joker,
             _ => unreachable!(),
         }
     }
@@ -74,6 +73,15 @@ impl FromStr for Hand {
         let mut card_counts = HashMap::new();
         for card in cards.iter() {
             *card_counts.entry(card).or_insert(0) += 1usize
+        }
+
+        if let Some(joker_count) = card_counts.remove(&Card::Joker) {
+            if let Some((card, max)) = card_counts.iter().max_by_key(|item| item.1) {
+                card_counts.insert(card, max + joker_count);
+            } else {
+                // Handle the case where the hand is all jokers. It previous broke becuase of the remove above.
+                card_counts.insert(&Card::Ace, 5);
+            }
         }
 
         let sorted_card_counts = card_counts.values().sorted();
@@ -120,10 +128,6 @@ impl PartialOrd for Hand {
 }
 
 fn part_1(input: &str) -> usize {
-    let a = HandType::OnePair;
-    let b = HandType::TwoPair;
-
-    println!("A < B {}", a < b);
     let mut hands = input
         .lines()
         .map(|line| Hand::from_str(line).unwrap())
@@ -139,8 +143,21 @@ fn part_1(input: &str) -> usize {
         .sum()
 }
 
-fn part_2(_input: &str) -> usize {
-    1
+fn part_2(input: &str) -> usize {
+    let mut hands = input
+        .replace('J', "j")
+        .lines()
+        .map(|line| Hand::from_str(line).unwrap())
+        .collect::<Vec<_>>();
+
+    hands.sort();
+
+    hands
+        .iter()
+        .rev()
+        .enumerate()
+        .map(|(rank, card)| card.bid * (rank + 1))
+        .sum()
 }
 
 fn main() {
@@ -156,12 +173,12 @@ mod tests {
     #[test]
     fn test_part_1() {
         assert_eq!(part_1(include_str!("inputs/day_07_example_1")), 6440);
-        assert_eq!(part_1(include_str!("inputs/day_07")), 249_204_891);
+        assert_eq!(part_1(include_str!("inputs/day_07")), 249204891);
     }
 
     #[test]
     fn test_part_2() {
-        // assert_eq!(part_2(include_str!("inputs/day_07_example_1")), 71_503);
-        // assert_eq!(part_2(include_str!("inputs/day_07")), 38_220_708);
+        assert_eq!(part_2(include_str!("inputs/day_07_example_1")), 5905);
+        assert_eq!(part_2(include_str!("inputs/day_07")), 249666369);
     }
 }
