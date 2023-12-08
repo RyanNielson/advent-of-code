@@ -1,63 +1,117 @@
 use itertools::Itertools;
+use rayon::prelude::*;
 
-fn part_1(input: &str) -> u64 {
-    let mut lines = input.lines();
+fn part_1(input: &str) -> usize {
+    let mut sections = input.split("\n\n");
 
-    let seeds = lines
+    let seed_ranges = sections
         .next()
         .unwrap()
         .split(':')
         .nth(1)
         .unwrap()
         .split_whitespace()
-        .map(|seed| seed.parse::<u64>().unwrap())
+        .map(|num| num.parse::<usize>().unwrap())
         .collect_vec();
 
-    seeds
-        .iter()
+    let mappings = sections
+        .map(|section| {
+            let parts = section.split('\n');
+            parts
+                .skip(1)
+                .map(|mapping| {
+                    let mut nums = mapping
+                        .split_whitespace()
+                        .map(|num| num.parse::<usize>().unwrap());
+                    let d_start = nums.next().unwrap();
+                    let s_start = nums.next().unwrap();
+                    let length = nums.next().unwrap();
+
+                    (s_start..s_start + length, d_start..d_start + length)
+                })
+                .collect_vec()
+        })
+        .collect_vec();
+
+    seed_ranges
+        .into_iter()
         .map(|seed| {
-            lines
-                .clone()
-                .filter(|line| !line.is_empty())
-                .fold(
-                    (*seed, false),
-                    |(current, skip): (u64, bool), line: &str| {
-                        if line.contains("map:") {
-                            (current, false)
-                        } else if skip {
-                            (current, skip)
-                        } else {
-                            let mut nums = line
-                                .split_whitespace()
-                                .map(|num| num.parse::<u64>().unwrap());
+            mappings.iter().fold(seed, |current, maps| {
+                for (source_range, destination_range) in maps {
+                    if source_range.contains(&current) {
+                        let diff = current - source_range.start;
+                        return destination_range.start + diff;
+                    }
+                }
 
-                            let d_start = nums.next().unwrap();
-                            let s_start = nums.next().unwrap();
-                            let length = nums.next().unwrap();
-
-                            // Using a range here along with .contains might make this not necessary?
-                            if current >= s_start && current <= s_start + length {
-                                for j in 0..length {
-                                    let source = s_start + j;
-                                    let destination = d_start + j;
-                                    if current == source {
-                                        return (destination, true);
-                                    }
-                                }
-                            }
-
-                            (current, false)
-                        }
-                    },
-                )
-                .0
+                current
+            })
         })
         .min()
         .unwrap()
 }
 
-fn part_2(_input: &str) -> u32 {
-    6
+fn part_2(input: &str) -> usize {
+    let mut sections = input.split("\n\n");
+
+    let mut seed_ranges = sections
+        .next()
+        .unwrap()
+        .split(':')
+        .nth(1)
+        .unwrap()
+        .split_whitespace()
+        .chunks(2)
+        .into_iter()
+        .map(|mut chunk| {
+            let start = chunk.next().unwrap().parse::<usize>().unwrap();
+            let amount = chunk.next().unwrap().parse::<usize>().unwrap();
+            start..start + amount
+        })
+        .collect_vec();
+
+    let mappings = sections
+        .map(|section| {
+            let parts = section.split('\n');
+            parts
+                .skip(1)
+                .map(|mapping| {
+                    let mut nums = mapping
+                        .split_whitespace()
+                        .map(|num| num.parse::<usize>().unwrap());
+                    let d_start = nums.next().unwrap();
+                    let s_start = nums.next().unwrap();
+                    let length = nums.next().unwrap();
+
+                    (s_start..s_start + length, d_start..d_start + length)
+                })
+                .collect_vec()
+        })
+        .collect_vec();
+
+    seed_ranges
+        .par_iter_mut()
+        .map(|seed_range| {
+            seed_range
+                .clone()
+                .into_par_iter()
+                .map(|seed| {
+                    mappings.iter().fold(seed, |current, maps| {
+                        for (source_range, destination_range) in maps {
+                            if source_range.contains(&current) {
+                                let diff = current - source_range.start;
+                                return destination_range.start + diff;
+                            }
+                        }
+
+                        current
+                    })
+                })
+                .min()
+                .unwrap()
+        })
+        .min()
+        .unwrap()
 }
 
 fn main() {
@@ -78,7 +132,7 @@ mod tests {
 
     #[test]
     fn test_part_2() {
-        // assert_eq!(part_2(include_str!("inputs/day_04_example_1")), 30);
-        // assert_eq!(part_2(include_str!("inputs/day_04")), 5_625_994);
+        assert_eq!(part_2(include_str!("inputs/day_05_example_1")), 46);
+        assert_eq!(part_2(include_str!("inputs/day_05")), 56931769);
     }
 }
