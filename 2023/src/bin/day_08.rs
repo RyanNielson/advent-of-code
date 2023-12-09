@@ -45,14 +45,12 @@ fn part_1(input: &str) -> usize {
                 let element_options = network.get(element_key).unwrap();
                 Continue((element_options[*i], steps + 1))
             }
-            // Done((element, steps))
-            // Continue(acc + x)
         })
         .into_inner()
         .1
 }
 
-fn part_2(input: &str) -> usize {
+fn part_2(_input: &str) -> usize {
     1
 }
 
