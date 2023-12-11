@@ -75,7 +75,7 @@ defmodule Day10 do
         end)
       end)
 
-    {sx, sy} = start = pipes |> Enum.find(fn {position, value} -> value == "S" end) |> elem(0)
+    {_sx, _sy} = start = pipes |> Enum.find(fn {_position, value} -> value == "S" end) |> elem(0)
 
     {pipes, start}
   end
