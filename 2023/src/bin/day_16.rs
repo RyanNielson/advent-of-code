@@ -5,10 +5,110 @@ use std::{
 
 fn part_1(input: &str) -> usize {
     let grid = Grid::from_str(input).unwrap();
-    let mut beams = vec![Beam {
-        position: Position { x: 0, y: 0 },
-        direction: Direction::Right,
-    }];
+    let energized = energize(
+        &grid,
+        Beam {
+            position: Position { x: 0, y: 0 },
+            direction: Direction::Right,
+        },
+    );
+
+    energized.len()
+}
+
+fn part_2(input: &str) -> usize {
+    let grid = Grid::from_str(input).unwrap();
+
+    let mut starting_beams = vec![
+        Beam {
+            position: Position { x: 0, y: 0 },
+            direction: Direction::Right,
+        },
+        Beam {
+            position: Position { x: 0, y: 0 },
+            direction: Direction::Down,
+        },
+        Beam {
+            position: Position {
+                x: grid.width - 1,
+                y: 0,
+            },
+            direction: Direction::Left,
+        },
+        Beam {
+            position: Position {
+                x: grid.width - 1,
+                y: 0,
+            },
+            direction: Direction::Down,
+        },
+        Beam {
+            position: Position {
+                x: 0,
+                y: grid.height - 1,
+            },
+            direction: Direction::Up,
+        },
+        Beam {
+            position: Position {
+                x: 0,
+                y: grid.height - 1,
+            },
+            direction: Direction::Right,
+        },
+        Beam {
+            position: Position {
+                x: grid.width - 1,
+                y: grid.height - 1,
+            },
+            direction: Direction::Up,
+        },
+        Beam {
+            position: Position {
+                x: grid.width - 1,
+                y: grid.height - 1,
+            },
+            direction: Direction::Left,
+        },
+    ];
+
+    for x in 1..grid.width - 1 {
+        starting_beams.push(Beam {
+            position: Position { x, y: 0 },
+            direction: Direction::Down,
+        });
+        starting_beams.push(Beam {
+            position: Position {
+                x,
+                y: grid.height - 1,
+            },
+            direction: Direction::Up,
+        });
+    }
+
+    for y in 1..grid.height - 1 {
+        starting_beams.push(Beam {
+            position: Position { x: 0, y },
+            direction: Direction::Right,
+        });
+        starting_beams.push(Beam {
+            position: Position {
+                x: grid.width - 1,
+                y,
+            },
+            direction: Direction::Left,
+        });
+    }
+
+    starting_beams
+        .into_iter()
+        .map(|beam| energize(&grid, beam).len())
+        .max()
+        .unwrap()
+}
+
+fn energize(grid: &Grid, start: Beam) -> HashSet<Position> {
+    let mut beams = vec![start];
     let mut energized = HashSet::new();
     let mut visited = HashSet::new();
 
@@ -36,11 +136,7 @@ fn part_1(input: &str) -> usize {
         beams.push(beam);
     }
 
-    energized.len()
-}
-
-fn part_2(input: &str) -> isize {
-    1
+    energized
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Copy, Hash)]
@@ -184,7 +280,7 @@ mod tests {
 
     #[test]
     fn test_part_2() {
-        // assert_eq!(part_2(include_str!("inputs/day_16_example_1")), 145);
-        // assert_eq!(part_2(include_str!("inputs/day_16")), 239484);
+        assert_eq!(part_2(include_str!("inputs/day_16_example_1")), 51);
+        assert_eq!(part_2(include_str!("inputs/day_16")), 8437);
     }
 }
