@@ -72,7 +72,7 @@ mod tests {
     #[test]
     fn test_part_1() {
         assert_eq!(part_1(include_str!("inputs/day_18_example_1")), 62);
-        // assert_eq!(part_1(include_str!("inputs/day_16")), 7979);
+        assert_eq!(part_1(include_str!("inputs/day_18")), 52231);
     }
 
     #[test]
