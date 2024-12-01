@@ -7,19 +7,11 @@ import (
 )
 
 func TestPart1(t *testing.T) {
-	result := Part1()
-
-	// if result != 0 {
-	// 	t.Errorf("expected '%d' but got '%d'", 0, result)
-	// }
-
-	assert.Equal(t, 0, result)
+	assert.Equal(t, 11, Part1("input_example_1"))
+	assert.Equal(t, 1651298, Part1("input"))
 }
 
 func TestPart2(t *testing.T) {
-	result := Part1()
-
-	if result != 0 {
-		t.Errorf("expected '%d' but got '%d'", 0, result)
-	}
+	assert.Equal(t, 31, Part2("input_example_1"))
+	assert.Equal(t, 21306195, Part2("input"))
 }
