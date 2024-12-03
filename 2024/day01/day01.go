@@ -8,7 +8,7 @@ import (
 )
 
 func Part1(inputPath string) int {
-	lines := utils.Lines(inputPath)
+	lines := utils.FileLines(inputPath)
 
 	left, right := sides(lines)
 
@@ -29,7 +29,7 @@ func Part1(inputPath string) int {
 }
 
 func Part2(inputPath string) int {
-	lines := utils.Lines(inputPath)
+	lines := utils.FileLines(inputPath)
 
 	left, right := sides(lines)
 

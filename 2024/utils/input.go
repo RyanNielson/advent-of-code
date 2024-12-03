@@ -5,7 +5,11 @@ import (
 	"strings"
 )
 
-func Lines(path string) []string {
+func FileText(path string) string {
+	return readFile(path)
+}
+
+func FileLines(path string) []string {
 	data := readFile(path)
 
 	return strings.Split(data, "\n")

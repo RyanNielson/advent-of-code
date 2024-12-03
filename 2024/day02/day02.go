@@ -8,7 +8,7 @@ import (
 )
 
 func Part1(inputPath string) int {
-	reports := utils.Lines(inputPath)
+	reports := utils.FileLines(inputPath)
 
 	count := 0
 	for _, report := range reports {
@@ -23,7 +23,7 @@ func Part1(inputPath string) int {
 }
 
 func Part2(inputPath string) int {
-	reports := utils.Lines(inputPath)
+	reports := utils.FileLines(inputPath)
 
 	count := 0
 	for _, report := range reports {
