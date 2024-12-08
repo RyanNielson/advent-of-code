@@ -25,10 +25,13 @@ func (a *Antennas) GetPositions(frequency string) []Position {
 	return a.elements[frequency]
 }
 
-func (a *Antennas) AddPosition(frequency string, position Position) {
+func (a *Antennas) AddPosition(frequency string, position Position) bool {
 	if position.x >= 0 && position.x < a.size.x && position.y >= 0 && position.y < a.size.y {
 		a.elements[frequency] = append(a.elements[frequency], position)
+		return true
 	}
+
+	return false
 }
 
 func (a *Antennas) AddPositionUnbounded(frequency string, position Position) {
@@ -53,7 +56,7 @@ func Part1(inputPath string) int {
 		}
 	}
 
-	antinodePositions := make(map[Position]struct{}) //, map[Position]struct{}
+	antinodePositions := make(map[Position]struct{})
 	for _, antinodePosition := range antennas.elements["#"] {
 		antinodePositions[antinodePosition] = struct{}{}
 	}
@@ -62,7 +65,36 @@ func Part1(inputPath string) int {
 }
 
 func Part2(inputPath string) int {
-	return 0
+	antennas := parse(inputPath)
+
+	for frequency, positions := range antennas.elements {
+		if frequency == "#" {
+			continue
+		}
+
+		for i, position1 := range positions {
+			for _, position2 := range positions[i+1:] {
+				difference := Position{position1.x - position2.x, position1.y - position2.y}
+
+				added := true
+				for i := 0; added; i++ {
+					added = antennas.AddPosition("#", Position{position1.x + difference.x*i, position1.y + difference.y*i})
+				}
+
+				added = true
+				for i := 0; added; i++ {
+					added = antennas.AddPosition("#", Position{position2.x + (difference.x * -1 * i), position2.y + (difference.y * -1 * i)})
+				}
+			}
+		}
+	}
+
+	antinodePositions := make(map[Position]struct{})
+	for _, antinodePosition := range antennas.elements["#"] {
+		antinodePositions[antinodePosition] = struct{}{}
+	}
+
+	return len(antinodePositions)
 }
 
 func parse(inputPath string) Antennas {
