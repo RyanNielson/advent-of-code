@@ -11,7 +11,6 @@ func TestPart1(t *testing.T) {
 	assert.Equal(t, 197357, Part1("input"))
 }
 
-// func TestPart2(t *testing.T) {
-// 	assert.Equal(t, 81, Part2("input_example_1"))
-// 	// assert.Equal(t, 1344, Part2("input"))
-// }
+func TestPart2(t *testing.T) {
+	assert.Equal(t, 234568186890978, Part2("input"))
+}

@@ -7,39 +7,52 @@ import (
 )
 
 func Part1(inputPath string) int {
-	stones := parse(inputPath)
-	for i := 0; i < 25; i++ {
-		stones = blink(stones)
-	}
-
-	return len(stones)
+	return solve(inputPath, 25)
 }
 
 func Part2(inputPath string) int {
-	return 0
+	return solve(inputPath, 75)
 }
 
-func blink(stones []string) []string {
-	var newStones []string
+func solve(inputPath string, blinkTimes int) int {
+	input := utils.FileText(inputPath)
 
-	for _, stone := range stones {
-		if stone == "0" {
-			newStones = append(newStones, "1")
-		} else if len(stone)%2 == 0 {
-			half := len(stone) / 2
-			left := stone[:half]
-			rightNumber, _ := strconv.Atoi(stone[half:])
-			newStones = append(newStones, left, strconv.Itoa(rightNumber))
+	stones := make(map[int]int)
+	for _, numberString := range strings.Fields(input) {
+		number, _ := strconv.Atoi(numberString)
+		stones[number] += 1
+	}
+
+	for i := 0; i < blinkTimes; i++ {
+		stones = blink(stones)
+	}
+
+	totalCount := 0
+	for _, count := range stones {
+		totalCount += count
+	}
+
+	return totalCount
+}
+
+func blink(stones map[int]int) map[int]int {
+	newStones := make(map[int]int)
+
+	for stone, count := range stones {
+		if stone == 0 {
+			newStones[1] += count
 		} else {
-			number, _ := strconv.Atoi(stone)
-			newStones = append(newStones, strconv.Itoa(number*2024))
+			if stoneString := strconv.Itoa(stone); len(stoneString)%2 == 0 {
+				half := len(stoneString) / 2
+				left, _ := strconv.Atoi(stoneString[:half])
+				right, _ := strconv.Atoi(stoneString[half:])
+				newStones[left] += count
+				newStones[right] += count
+			} else {
+				newStones[stone*2024] += count
+			}
 		}
 	}
 
 	return newStones
-}
-
-func parse(inputPath string) []string {
-	input := utils.FileText(inputPath)
-	return strings.Fields(input)
 }
