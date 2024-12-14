@@ -3,6 +3,7 @@ package day14
 import (
 	"aoc2024/utils"
 	"fmt"
+	"strings"
 )
 
 type Robot struct {
@@ -66,6 +67,47 @@ func (s Space) safetyFactor() int {
 	return quadrant1 * quadrant2 * quadrant3 * quadrant4
 }
 
+func (s *Space) draw(iteration int) {
+	positions := Set{}
+	for _, robot := range s.robots {
+		positions.Add(Position{robot.x, robot.y})
+	}
+
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("Iteration: %d", iteration))
+
+	for y := range s.height {
+		for x := range s.width {
+			hasRobot := positions.Contains(Position{x, y})
+
+			if hasRobot {
+				sb.WriteString("#")
+			} else {
+				sb.WriteString(" ")
+			}
+		}
+
+		sb.WriteString("\n")
+	}
+
+	fmt.Println(sb.String())
+}
+
+type Position struct {
+	x, y int
+}
+
+type Set map[Position]struct{}
+
+func (s Set) Add(position Position) {
+	s[position] = struct{}{}
+}
+
+func (s Set) Contains(position Position) bool {
+	_, found := s[position]
+	return found
+}
+
 func Part1(inputPath string, width, height int) int {
 	lines := utils.FileLines(inputPath)
 	robots := make([]Robot, 0)
@@ -81,6 +123,20 @@ func Part1(inputPath string, width, height int) int {
 	return space.safetyFactor()
 }
 
-func Part2(inputPath string) int {
-	return 0
+func Part2(inputPath string, width, height int) {
+	lines := utils.FileLines(inputPath)
+	robots := make([]Robot, 0)
+	for _, line := range lines {
+		var x, y, vx, vy int
+		fmt.Sscanf(line, "p=%d,%d v=%d,%d", &x, &y, &vx, &vy)
+		robots = append(robots, Robot{x, y, vx, vy})
+	}
+
+	space := Space{width, height, robots}
+	i := 0
+	for {
+		space.draw(i)
+		space.move(1)
+		i++
+	}
 }
