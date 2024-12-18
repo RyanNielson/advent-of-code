@@ -3,6 +3,7 @@ package day17
 import (
 	"aoc2024/utils"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -66,7 +67,64 @@ func Part1(inputPath string) string {
 }
 
 func Part2(inputPath string) int {
-	return 0
+	registers, instructions, instructionPointer := parse(inputPath)
+
+	result := 0
+	for i := 0; ; i++ {
+		// Reset state
+		registers[A] = i
+		registers[B] = 0
+		registers[C] = 0
+		instructionPointer = 0
+		outputIntegers := make([]int, 0)
+		for {
+			if instructionPointer >= len(instructions) {
+				break
+			}
+
+			opcode := instructions[instructionPointer]
+			operand := instructions[instructionPointer+1]
+
+			if opcode == 0 { // adv
+				numerator := registers[A]
+				denominator := utils.PowInt(2, comboOperand(operand, registers))
+				registers[A] = numerator / denominator
+
+			} else if opcode == 1 { // bxl
+				registers[B] = registers[B] ^ operand
+			} else if opcode == 2 { // bst
+				registers[B] = comboOperand(operand, registers) % 8
+			} else if opcode == 3 { // jnz
+				if registers[A] == 0 {
+					// Do nothing
+				} else {
+					instructionPointer = operand
+					continue // So we skip increase by 2
+				}
+			} else if opcode == 4 { // bxc
+				registers[B] = registers[B] ^ registers[C]
+			} else if opcode == 5 { // out
+				outputIntegers = append(outputIntegers, comboOperand(operand, registers)%8)
+			} else if opcode == 6 { // bdv
+				numerator := registers[A]
+				denominator := utils.PowInt(2, comboOperand(operand, registers))
+				registers[B] = numerator / denominator
+			} else if opcode == 7 { // cdv
+				numerator := registers[A]
+				denominator := utils.PowInt(2, comboOperand(operand, registers))
+				registers[C] = numerator / denominator
+			}
+
+			instructionPointer += 2
+		}
+
+		if slices.Equal(instructions, outputIntegers) {
+			result = i
+			break
+		}
+	}
+
+	return result
 }
 
 func comboOperand(operand int, registers []int) int {
