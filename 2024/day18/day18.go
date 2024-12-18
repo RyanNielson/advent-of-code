@@ -3,6 +3,7 @@ package day18
 import (
 	"aoc2024/utils"
 	"fmt"
+	"strconv"
 )
 
 type Coord struct {
@@ -21,9 +22,26 @@ func (c CoordSet) Contains(coord Coord) bool {
 }
 
 func Part1(inputPath string, max int, bytes int) int {
-	memory := initialize(inputPath, bytes)
+	coords := parse(inputPath)
+	memory := initialize(coords, bytes)
 
 	return bfs(memory, Coord{max, max})
+}
+
+func Part2(inputPath string, max int, finalByte int) string {
+	coords := parse(inputPath)
+
+	for i := finalByte; i < len(coords); i++ {
+		memory := initialize(coords, i)
+
+		steps := bfs(memory, Coord{max, max})
+		if steps == 0 {
+			coord := coords[i-1]
+			return strconv.Itoa(coord.x) + "," + strconv.Itoa(coord.y)
+		}
+	}
+
+	return "NOTFOUND"
 }
 
 func bfs(memory CoordSet, goal Coord) int {
@@ -34,7 +52,6 @@ func bfs(memory CoordSet, goal Coord) int {
 	steps := make(map[Coord]int)
 	steps[root] = 0
 
-	// steps := 0 // Increase this at end.
 	for len(queue) > 0 {
 		v := queue[0]
 		queue = queue[1:]
@@ -72,22 +89,29 @@ func bfs(memory CoordSet, goal Coord) int {
 	return 0
 }
 
-func Part2(inputPath string) int {
-	return 0
-}
-
-func initialize(inputPath string, bytes int) CoordSet {
-	lines := utils.FileLines(inputPath)
+func initialize(coords []Coord, bytes int) CoordSet {
 	grid := make(CoordSet)
 
-	for i, line := range lines {
+	for i, coord := range coords {
 		if i == bytes {
 			break
 		}
-		var x, y int
-		fmt.Sscanf(line, "%d,%d", &x, &y)
-		grid.Add(Coord{x, y})
+
+		grid.Add(coord)
 	}
 
 	return grid
+}
+
+func parse(inputPath string) []Coord {
+	lines := utils.FileLines(inputPath)
+	coords := []Coord{}
+
+	for _, line := range lines {
+		var x, y int
+		fmt.Sscanf(line, "%d,%d", &x, &y)
+		coords = append(coords, Coord{x, y})
+	}
+
+	return coords
 }
