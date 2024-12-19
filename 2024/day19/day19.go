@@ -10,7 +10,7 @@ func Part1(inputPath string) int {
 
 	possibleDesignsCount := 0
 	for _, design := range designs {
-		if isDesignPossible(design, patterns) {
+		if numPossibleDesigns(design, patterns, map[string]int{}) > 0 {
 			possibleDesignsCount++
 		}
 	}
@@ -18,23 +18,38 @@ func Part1(inputPath string) int {
 	return possibleDesignsCount
 }
 
-func isDesignPossible(design string, patterns []string) bool {
+func Part2(inputPath string) int {
+	patterns, designs := parse(inputPath)
+
+	possibleDesignsCount := 0
+	for _, design := range designs {
+		possibleDesignsCount += numPossibleDesigns(design, patterns, map[string]int{})
+	}
+
+	return possibleDesignsCount
+}
+
+func numPossibleDesigns(design string, patterns []string, cache map[string]int) int {
+	if value, found := cache[design]; found {
+		return value
+	}
+
 	if design == "" {
-		return true
+		return 1
 	}
 
 	patternsToCheck := possiblePatterns(design, patterns)
 	if len(patternsToCheck) == 0 {
-		return false
+		return 0
 	}
 
+	totalCount := 0
 	for _, pattern := range patternsToCheck {
-		if isDesignPossible(strings.TrimPrefix(design, pattern), patterns) {
-			return true
-		}
+		totalCount += numPossibleDesigns(strings.TrimPrefix(design, pattern), patterns, cache)
 	}
 
-	return false
+	cache[design] = totalCount
+	return totalCount
 }
 
 func possiblePatterns(design string, patterns []string) []string {
@@ -47,10 +62,6 @@ func possiblePatterns(design string, patterns []string) []string {
 	}
 
 	return possible
-}
-
-func Part2(inputPath string) int {
-	return 0
 }
 
 func parse(inputPath string) (patterns []string, designs []string) {
