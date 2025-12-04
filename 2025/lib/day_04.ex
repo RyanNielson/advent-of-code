@@ -1,10 +1,26 @@
 defmodule Day04 do
   def part_1(input) do
-    input |> build_grid |> accessible_rolls() |> Enum.count()
+    solve(input, &accessible_rolls/1)
   end
 
   def part_2(input) do
-    input |> build_grid() |> remove()
+    solve(input, &remove/1)
+  end
+
+  defp solve(input, work_fun) do
+    input
+    |> String.split()
+    |> Enum.with_index()
+    |> Enum.flat_map(fn {row, y} ->
+      row
+      |> String.graphemes()
+      |> Enum.with_index()
+      |> Enum.map(fn {character, x} -> {{x, y}, character} end)
+    end)
+    |> Enum.reject(fn {_, character} -> character == "." end)
+    |> Enum.into(%{})
+    |> work_fun.()
+    |> Enum.count()
   end
 
   defp accessible_rolls(grid) do
@@ -36,19 +52,5 @@ defmodule Day04 do
       _ ->
         remove(Map.drop(grid, to_remove), to_remove ++ removed)
     end
-  end
-
-  defp build_grid(input) do
-    input
-    |> String.split()
-    |> Enum.with_index()
-    |> Enum.flat_map(fn {row, y} ->
-      row
-      |> String.graphemes()
-      |> Enum.with_index()
-      |> Enum.map(fn {character, x} -> {{x, y}, character} end)
-    end)
-    |> Enum.reject(fn {_, character} -> character == "." end)
-    |> Enum.into(%{})
   end
 end
