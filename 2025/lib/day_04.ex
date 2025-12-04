@@ -26,15 +26,15 @@ defmodule Day04 do
     end)
   end
 
-  defp remove(grid, removed_count \\ 0) do
+  defp remove(grid, removed \\ []) do
     to_remove = accessible_rolls(grid)
 
     case to_remove do
       [] ->
-        removed_count
+        removed
 
       _ ->
-        remove(Map.drop(grid, to_remove), removed_count + length(to_remove))
+        remove(Map.drop(grid, to_remove), to_remove ++ removed)
     end
   end
 
