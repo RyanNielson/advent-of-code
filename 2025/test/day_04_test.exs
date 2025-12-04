@@ -9,7 +9,7 @@ defmodule Day04Test do
   end
 
   test "part2" do
-    # assert Day04.part_2(input("day_04_example_1")) == 3_121_910_778_619
-    # assert Day04.part_2(input("day_04")) == 171_846_613_143_331
+    assert Day04.part_2(input("day_04_example_1")) == 43
+    assert Day04.part_2(input("day_04")) == 9784
   end
 end
